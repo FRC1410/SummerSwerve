@@ -63,13 +63,12 @@ public class Drivetrain implements TickedSubsystem {
 	}
 
 	public void drive(double speed, double strafe, double rotation, boolean isFieldRelative, boolean isLocked) {
-		if (isLocked = true) {
+		if (isLocked) {
 			frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
 			frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
 			backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(225)));
 			backRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(315)));
 		} else {
-
 			var swerveModuleStates =
 				kinematics.toSwerveModuleStates(
 					isFieldRelative ? ChassisSpeeds.fromFieldRelativeSpeeds(speed, strafe, rotation, gyro.getRotation2d())
@@ -82,6 +81,7 @@ public class Drivetrain implements TickedSubsystem {
 			backRight.setDesiredState(swerveModuleStates[3]);
 		}
 	}
+
 	public void updateOdometry() {
 		odometry.update(
 				gyro.getRotation2d(),
@@ -102,10 +102,10 @@ public class Drivetrain implements TickedSubsystem {
 	}
 
 	public void setBreakMode() {
-		frontLeft.setDriveBreak();
-		frontRight.setDriveBreak();
-		backLeft.setDriveBreak();
-		backRight.setDriveBreak();
+		frontLeft.setBreakMode();
+		frontRight.setBreakMode();
+		backLeft.setBreakMode();
+		backRight.setBreakMode();
 	}
 
 	@Override

@@ -82,8 +82,9 @@ public class SwerveModule implements TickedSubsystem {
 		driveMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 	}
 
-	public void setDriveBreak() {
+	public void setBreakMode() {
 		driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
+		steerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 	}
 
 	@Override

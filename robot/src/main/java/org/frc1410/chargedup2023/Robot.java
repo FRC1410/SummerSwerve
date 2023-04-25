@@ -4,10 +4,13 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
+import org.frc1410.chargedup2023.Commands.DriveLooped;
+import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
 import org.frc1410.framework.PhaseDrivenRobot;
 import org.frc1410.framework.control.Controller;
+import org.frc1410.framework.scheduler.task.TaskPersistence;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
@@ -16,6 +19,8 @@ public final class Robot extends PhaseDrivenRobot {
 	//<editor-fold desc="Controllers">
 	private final Controller driverController = new Controller(scheduler, DRIVER_CONTROLLER, 0.2);
 	private final Controller operatorController = new Controller(scheduler, OPERATOR_CONTROLLER, 0.25);
+
+	private final Drivetrain drivetrain = subsystems.track(new Drivetrain());
 	//</editor-fold>
 
 	//<editor-fold desc="Auto Selector">
@@ -87,9 +92,6 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void autonomousSequence() {
-
-		// ree
-
 		NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
 		String autoProfile = autoSubscriber.get();
 		var autoCommand = autoSelector.select(autoProfile);
@@ -98,8 +100,16 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void teleopSequence() {
-		// L + rip Bozo
+		// Main driving command
+		scheduler.scheduleDefaultCommand(new DriveLooped(
+			drivetrain,
+			driverController.RIGHT_Y_AXIS,
+			driverController.RIGHT_X_AXIS,
+			true),
+			TaskPersistence.GAMEPLAY);
+
 	}
+
 
 	@Override
 	public void testSequence() {

@@ -6,10 +6,18 @@ import org.frc1410.framework.control.Axis;
 
 
 public class DriveLooped extends CommandBase {
-	public DriveLooped() {
-		// each subsystem used by the command must be passed into the
-		// addRequirements() method (which takes a vararg of Subsystem)
-		addRequirements();
+	private final Drivetrain drivetrain;
+	private final Axis rightVerticalAxis;
+	private final Axis rightHorizontalAxis;
+	private final boolean isFieldRelative;
+
+
+	public DriveLooped(Drivetrain drivetrain, Axis rightVerticalAxis, Axis rightHorizontalAxis, boolean isFieldRelative) {
+		this.drivetrain = drivetrain;
+		this.rightVerticalAxis = rightVerticalAxis;
+		this.rightHorizontalAxis = rightHorizontalAxis;
+		this.isFieldRelative = isFieldRelative;
+
 	}
 
 	@Override
@@ -19,17 +27,19 @@ public class DriveLooped extends CommandBase {
 
 	@Override
 	public void execute() {
-
+		drivetrain.drive(
+			rightVerticalAxis.get(),
+			rightHorizontalAxis.get(),
+			0, true, false);
 	}
 
 	@Override
 	public boolean isFinished() {
-		// TODO: Make this return true when this Command no longer needs to run execute()
 		return false;
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-
+		drivetrain.setBreakMode();
 	}
 }
