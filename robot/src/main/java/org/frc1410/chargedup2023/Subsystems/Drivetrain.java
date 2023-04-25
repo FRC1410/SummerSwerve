@@ -21,10 +21,10 @@ public class Drivetrain implements TickedSubsystem {
 	private final DoublePublisher xPub = NetworkTables.PublisherFactory(table, "X", 0);
 	private final DoublePublisher yPub = NetworkTables.PublisherFactory(table, "Y", 0);
 	private final DoublePublisher yaw = NetworkTables.PublisherFactory(table, "yaw", 0);
-	private final DoublePublisher frontLeftModulePub = NetworkTables.PublisherFactory(table, "Front left module", 0);
-	private final DoublePublisher frontRightModulePub = NetworkTables.PublisherFactory(table, "Front right module", 0);
-	private final DoublePublisher backLeftModulePub = NetworkTables.PublisherFactory(table, "Back left module", 0);
-	private final DoublePublisher backRightModulePub = NetworkTables.PublisherFactory(table, "Back right module", 0);
+	private final DoublePublisher frontLeftModulePosition = NetworkTables.PublisherFactory(table, "Front left position", 0);
+	private final DoublePublisher frontRightModulePosition = NetworkTables.PublisherFactory(table, "Front right position", 0);
+	private final DoublePublisher backLeftModulePosition = NetworkTables.PublisherFactory(table, "Back left position", 0);
+	private final DoublePublisher backRightModulePosition = NetworkTables.PublisherFactory(table, "Back right position", 0);
 	private final DoublePublisher frontLeftSpeed = NetworkTables.PublisherFactory(table, "Front left speed", 0);
 	private final DoublePublisher frontRightSpeed = NetworkTables.PublisherFactory(table, "Front right speed", 0);
 	private final DoublePublisher backLeftSpeed = NetworkTables.PublisherFactory(table, "Back left speed", 0);
@@ -118,10 +118,10 @@ public class Drivetrain implements TickedSubsystem {
 		xPub.set(odometry.getPoseMeters().getX());
 		yPub.set(odometry.getPoseMeters().getY());
 
-		frontLeftModulePub.set(frontLeft.getDrivePosition());
-		frontRightModulePub.set(frontRight.getDrivePosition());
-		backLeftModulePub.set(backLeft.getDrivePosition());
-		backRightModulePub.set(backRight.getDrivePosition());
+		frontLeftModulePosition.set(frontLeft.getDrivePosition());
+		frontRightModulePosition.set(frontRight.getDrivePosition());
+		backLeftModulePosition.set(backLeft.getDrivePosition());
+		backRightModulePosition.set(backRight.getDrivePosition());
 
 		frontLeftSpeed.set(frontLeft.getDriveVel());
 		frontRightSpeed.set(frontRight.getDriveVel());
