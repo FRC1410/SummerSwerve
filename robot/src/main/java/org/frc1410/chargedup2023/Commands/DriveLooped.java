@@ -7,17 +7,16 @@ import org.frc1410.framework.control.Axis;
 
 public class DriveLooped extends CommandBase {
 	private final Drivetrain drivetrain;
-	private final Axis rightVerticalAxis;
-	private final Axis rightHorizontalAxis;
-	private final boolean isFieldRelative;
+	private final Axis rightYAxis;
+	private final Axis rightXAxis;
+	private final Axis leftXAxis;
 
 
-	public DriveLooped(Drivetrain drivetrain, Axis rightVerticalAxis, Axis rightHorizontalAxis, boolean isFieldRelative) {
+	public DriveLooped(Drivetrain drivetrain, Axis rightYAxis, Axis rightXAxis, Axis leftXAxis) {
 		this.drivetrain = drivetrain;
-		this.rightVerticalAxis = rightVerticalAxis;
-		this.rightHorizontalAxis = rightHorizontalAxis;
-		this.isFieldRelative = isFieldRelative;
-
+		this.rightYAxis = rightYAxis;
+		this.rightXAxis = rightXAxis;
+		this.leftXAxis = leftXAxis;
 	}
 
 	@Override
@@ -28,9 +27,10 @@ public class DriveLooped extends CommandBase {
 	@Override
 	public void execute() {
 		drivetrain.drive(
-			rightVerticalAxis.get(),
-			rightHorizontalAxis.get(),
-			0, true, false);
+			rightYAxis.get(),
+			rightXAxis.get(),
+			leftXAxis.get(),
+			true, false);
 	}
 
 	@Override
