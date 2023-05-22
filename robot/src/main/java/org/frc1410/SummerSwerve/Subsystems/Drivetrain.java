@@ -1,17 +1,18 @@
-package org.frc1410.chargedup2023.Subsystems;
+package org.frc1410.SummerSwerve.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import org.frc1410.chargedup2023.util.NetworkTables;
+import org.frc1410.SummerSwerve.util.NetworkTables;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
 import edu.wpi.first.math.geometry.Translation2d;
 
-import static org.frc1410.chargedup2023.util.IDs.*;
-import static org.frc1410.chargedup2023.util.Constants.*;
+import static org.frc1410.SummerSwerve.util.IDs.*;
+import static org.frc1410.SummerSwerve.util.Constants.*;
 import static edu.wpi.first.wpilibj.SerialPort.Port.kUSB;
 
 public class Drivetrain implements TickedSubsystem {
@@ -111,6 +112,34 @@ public class Drivetrain implements TickedSubsystem {
 		backRight.setDriveBreak();
 	}
 
+	public Pose2d getPos() {
+		return odometry.getPoseMeters();
+	}
+
+	public void resetPos(Pose2d startingPose) {
+		 odometry.resetPosition(
+			gyro.getRotation2d(),
+			new SwerveModulePosition[] {
+				frontLeft.getPosition(),
+				frontRight.getPosition(),
+				backLeft.getPosition(),
+				backRight.getPosition()
+			},
+			 startingPose
+		);
+	}
+
+	public SwerveDriveKinematics getKinematics() {
+		return kinematics;
+	}
+
+	public void getSwerveStates() {
+		frontLeft.getState();
+		frontRight.getState();
+		backLeft.getState();
+		backRight.getState();
+	}
+
 	@Override
 	public void periodic() {
 		updateOdometry();
@@ -130,5 +159,6 @@ public class Drivetrain implements TickedSubsystem {
 		frontRightSpeed.set(frontRight.getDriveVel());
 		backLeftSpeed.set(backLeft.getDriveVel());
 		backRightSpeed.set(backRight.getDriveVel());
+
 	}
 }

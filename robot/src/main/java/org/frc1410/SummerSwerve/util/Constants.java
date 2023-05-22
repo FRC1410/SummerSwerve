@@ -1,4 +1,4 @@
-package org.frc1410.chargedup2023.util;
+package org.frc1410.SummerSwerve.util;
 
 public interface Constants {
 	// Controller constants
@@ -11,7 +11,9 @@ public interface Constants {
 	double MAX_ANGULAR_VEL = 25.57;
 	double MAX_ANGULAR_ACC = 2 * Math.PI;  // radians per sec squared
 	double MAX_SPEED = 4.2;
+	double MAX_ACCELERATION = 4;
 	double MAX_ANGULAR_SPEED = Math.PI;
+
 
 	int WHEEL_RADIUS = 2;
 	int SWERVE_MODULE_ENCODER_RES = 4095;

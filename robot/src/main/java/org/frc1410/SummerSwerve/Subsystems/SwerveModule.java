@@ -1,4 +1,4 @@
-package org.frc1410.chargedup2023.Subsystems;
+package org.frc1410.SummerSwerve.Subsystems;
 
 import com.ctre.phoenix.sensors.CANCoder;
 import com.revrobotics.CANSparkMax;
@@ -11,11 +11,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
 
-import static org.frc1410.chargedup2023.util.Constants.*;
-import static org.frc1410.chargedup2023.util.Tuning.*;
+import static org.frc1410.SummerSwerve.util.Constants.*;
+import static org.frc1410.SummerSwerve.util.Tuning.*;
 
 public class SwerveModule implements TickedSubsystem {
 

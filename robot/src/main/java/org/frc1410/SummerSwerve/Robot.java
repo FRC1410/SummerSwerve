@@ -1,22 +1,22 @@
-package org.frc1410.chargedup2023;
+package org.frc1410.SummerSwerve;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
-import org.frc1410.chargedup2023.util.NetworkTables;
+import org.frc1410.SummerSwerve.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
 import org.frc1410.framework.PhaseDrivenRobot;
 import org.frc1410.framework.control.Controller;
 import org.frc1410.framework.scheduler.task.TaskPersistence;
 
-import static org.frc1410.chargedup2023.util.Constants.*;
+import static org.frc1410.SummerSwerve.util.Constants.*;
 
-import org.frc1410.chargedup2023.Commands.DriveLooped;
-import org.frc1410.chargedup2023.Commands.DriveLoopedTriggers;
-import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
-import org.frc1410.chargedup2023.Commands.LockDrivetrainPressed;
-import org.frc1410.chargedup2023.Subsystems.Drivetrain;
+import org.frc1410.SummerSwerve.Commands.DriveLooped;
+import org.frc1410.SummerSwerve.Commands.DriveLoopedTriggers;
+import org.frc1410.SummerSwerve.Commands.LockDrivetrainHeld;
+import org.frc1410.SummerSwerve.Commands.LockDrivetrainPressed;
+import org.frc1410.SummerSwerve.Subsystems.Drivetrain;
 
 public final class Robot extends PhaseDrivenRobot {
 
@@ -97,7 +97,7 @@ public final class Robot extends PhaseDrivenRobot {
 	@Override
 	public void autonomousSequence() {
 
-		// ree
+
 
 		NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
 		String autoProfile = autoSubscriber.get();
@@ -107,10 +107,21 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void teleopSequence() {
-		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.RIGHT_X_AXIS, driverController.RIGHT_Y_AXIS, driverController.LEFT_X_AXIS), TaskPersistence.GAMEPLAY);
+		scheduler.scheduleDefaultCommand(new DriveLooped(
+			drivetrain,
+			driverController.RIGHT_X_AXIS,
+			driverController.RIGHT_Y_AXIS,
+			driverController.LEFT_X_AXIS),
+			TaskPersistence.GAMEPLAY);
 		driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
 		
-		scheduler.scheduleDefaultCommand(new DriveLoopedTriggers(drivetrain, operatorController.RIGHT_X_AXIS, operatorController.RIGHT_Y_AXIS, operatorController.LEFT_TRIGGER, operatorController.RIGHT_TRIGGER), TaskPersistence.GAMEPLAY);
+		scheduler.scheduleDefaultCommand(new DriveLoopedTriggers(drivetrain,
+			operatorController.RIGHT_X_AXIS,
+			operatorController.RIGHT_Y_AXIS,
+			operatorController.LEFT_TRIGGER,
+			operatorController.RIGHT_TRIGGER),
+			TaskPersistence.GAMEPLAY);
+
 		operatorController.A.whenPressed(new LockDrivetrainPressed(drivetrain), TaskPersistence.EPHEMERAL);
 	}
 

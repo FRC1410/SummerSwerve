@@ -1,6 +1,6 @@
-package org.frc1410.chargedup2023.Commands;
+package org.frc1410.SummerSwerve.Commands;
 
-import org.frc1410.chargedup2023.Subsystems.Drivetrain;
+import org.frc1410.SummerSwerve.Subsystems.Drivetrain;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
