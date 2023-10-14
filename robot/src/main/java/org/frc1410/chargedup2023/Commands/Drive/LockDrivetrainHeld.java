@@ -1,4 +1,4 @@
-package org.frc1410.chargedup2023.Commands;
+package org.frc1410.chargedup2023.Commands.Drive;
 
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
