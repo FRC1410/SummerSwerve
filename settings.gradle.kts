@@ -26,4 +26,4 @@ pluginManagement {
 }
 
 includeBuild("build-logic")
-include("framework", "robot", "test")
+include("framework", "robot")

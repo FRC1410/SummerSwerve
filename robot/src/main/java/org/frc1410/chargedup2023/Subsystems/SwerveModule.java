@@ -161,6 +161,10 @@ public class SwerveModule implements TickedSubsystem {
 		return driveEncoder.getPosition() * DRIVE_ROTATIONS_TO_METERES;
 	}
 
+	public SwerveModuleState getState() {
+		return new SwerveModuleState(this.getDriveVelocityMetersPerSecond(), Rotation2d.fromRadians(getSteerPosition()));
+	}
+
 	public double getSteerPosition() {
 		double rem = steerEncoder.getAbsolutePosition() % 360;
 

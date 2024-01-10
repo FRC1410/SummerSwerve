@@ -4,6 +4,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
@@ -13,7 +14,18 @@ import org.frc1410.framework.PhaseDrivenRobot;
 import org.frc1410.framework.control.Controller;
 import org.frc1410.framework.scheduler.task.TaskPersistence;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
+
+// import com.pathplanner.lib.PathPlannerTrajectory;
+// import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import static org.frc1410.chargedup2023.util.Constants.*;
+
+import java.util.HashMap;
 
 import org.frc1410.chargedup2023.Commands.DriveLooped;
 import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
@@ -80,8 +92,9 @@ public final class Robot extends PhaseDrivenRobot {
 	}
 
 	private final AutoSelector autoSelector = new AutoSelector()
-	.add("ENGAGE", () -> new Engage(this.drivetrain))
+		.add("ENGAGE", () -> new Engage(this.drivetrain))
 		.add("FORWARD", () -> new Forward(this.drivetrain));
+		// .add("NEW", () -> new PathPlannerAuto("New Path"));
 
 	{
 		var profiles = new String[autoSelector.getProfiles().size()];
@@ -101,10 +114,31 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void autonomousSequence() {
-		NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
-		String autoProfile = autoSubscriber.get();
-		var autoCommand = autoSelector.select(autoProfile);
-		scheduler.scheduleAutoCommand(autoCommand);
+		HashMap<String, Command> eventMap = new HashMap<>();
+
+		// PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
+		PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
+	
+		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
+			this.drivetrain::getPoseMeters, // Pose2d supplier
+			this.drivetrain::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+			// this.kinematics, // SwerveDriveKinematics
+			new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+			new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+			this.drivetrain::driveRobotRelative, // Module states consumer used to output to the drive subsystem
+			eventMap,
+			true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+			this.drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
+	)	;
+
+
+		Command fullAuto = autoBuilder.fullAuto(examplePath);
+
+
+		// NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
+		// String autoProfile = autoSubscriber.get();
+		// var autoCommand = autoSelector.select(autoProfile);
+		scheduler.scheduleAutoCommand(fullAuto);
 	}
 
 	@Override

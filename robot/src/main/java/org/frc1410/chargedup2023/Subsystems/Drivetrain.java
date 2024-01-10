@@ -1,6 +1,11 @@
 package org.frc1410.chargedup2023.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.SwerveAutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,14 +20,23 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import org.frc1410.framework.scheduler.subsystem.SubsystemStore;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
 
 import static org.frc1410.chargedup2023.util.IDs.*;
 
+import java.util.HashMap;
+
 import org.frc1410.chargedup2023.util.NetworkTables;
+
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+// import com.pathplanner.lib.util.PIDConstants;
+// import com.pathplanner.lib.util.ReplanningConfig;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
@@ -69,7 +83,7 @@ public class Drivetrain implements TickedSubsystem {
 
 	private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
-	private final PIDController headingPidController = new PIDController(2, 0, 0);
+	// private final PIDController headingPidController = new PIDController(2, 0, 0);
 
 	private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
 			FRONT_LEFT_SWERVE_MODULE_LOCATION,
@@ -103,14 +117,59 @@ public class Drivetrain implements TickedSubsystem {
 						backRight.getPosition()
 				});
 
-		this.headingPidController.enableContinuousInput(-Math.PI, Math.PI);
+		// this.headingPidController.enableContinuousInput(-Math.PI, Math.PI);
 
 		gyro.reset();
 
 		gyro.calibrate();
+
+		// AutoBuilder.configureHolonomic(
+        //         this::getPoseMeters, // Robot pose supplier
+        //         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+        //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+        //         this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+        //         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+        //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+        //                 new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+        //                 4.5, // Max module speed, in m/s
+        //                 0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
+        //                 new ReplanningConfig() // Default path replanning config. See the API for the options here
+        //         ),
+        //         () -> {
+        //             // Boolean supplier that controls when the path will be mirrored for the red alliance
+        //             // This will flip the path being followed to the red side of the field.
+        //             // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+        //             // var alliance = DriverStation.getAlliance();
+        //             // if (alliance.isPresent()) {
+        //             //     return alliance.get() == DriverStation.Alliance.Red;
+        //             // }
+        //             return false;
+        //         },
+        //         this // Reference to this subsystem to set requirements
+        // );
+
+		// Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+		
+	}
+
+	void setModuleStates(SwerveModuleState[] a) {
+		// this.driveRobotRelative(a);;
 	}
 
 	// private float yawOffset;
+
+	public void resetPose(Pose2d pose) {
+		this.odometry.resetPosition(
+			this.gyro.getRotation2d(),
+			new SwerveModulePosition[] {
+				frontLeft.getPosition(),
+				frontRight.getPosition(),
+				backLeft.getPosition(),
+				backRight.getPosition()
+			},
+			pose);
+	  }
 
 	public void zeroYaw() {
 		// System.out.println("zero Yaw");
@@ -118,6 +177,8 @@ public class Drivetrain implements TickedSubsystem {
 		this.desiredHeading = this.gyro.getRotation2d();
 		// yawOffset = this.gyro.getRotation2d()
 	}
+
+	
 
 	public void zero() {
 		frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
@@ -171,24 +232,17 @@ public class Drivetrain implements TickedSubsystem {
 		return discretize(continuousSpeeds.vxMetersPerSecond, continuousSpeeds.vyMetersPerSecond, continuousSpeeds.omegaRadiansPerSecond, dt);
 	}
 
-	public void driveKeepingHeading(double xVelocity, double yVelocity, boolean isFieldRelative) {
-		var headingAdjustment = this.headingPidController.calculate(this.gyro.getRotation2d().getRadians(), this.desiredHeading.getRadians());
-		// navXYaw.set(-headingAdjustment);
-		this.driveWithRotation(xVelocity, yVelocity, -headingAdjustment, isFieldRelative);
+	// public void driveKeepingHeading(double xVelocity, double yVelocity, boolean isFieldRelative) {
+	// 	var headingAdjustment = this.headingPidController.calculate(this.gyro.getRotation2d().getRadians(), this.desiredHeading.getRadians());
+	// 	// navXYaw.set(-headingAdjustment);
+	// 	this.driveWithRotation(xVelocity, yVelocity, -headingAdjustment, isFieldRelative);
+	// }
+
+	public void driveRobotRelative(ChassisSpeeds speeds){
+		this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 	}
 
 	public void drive(double xVelocity, double yVelocity, double rotation, boolean isFieldRelative) {
-		// if (rotation == 0) {
-		// 	this.driveKeepingHeading(xVelocity, yVelocity, isFieldRelative);
-		// } else {
-			this.driveWithRotation(xVelocity, yVelocity, rotation, isFieldRelative);
-		// 	this.desiredHeading = gyro.getRotation2d();
-		// }
-	}
-
-	public void driveWithRotation(double xVelocity, double yVelocity, double rotation, boolean isFieldRelative) {
-		// navXYaw.set(gyro.getYaw());
-
 		if (isLocked) {
 			frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
 			frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
@@ -227,6 +281,15 @@ public class Drivetrain implements TickedSubsystem {
 			backLeft.setDesiredState(swerveModuleStates[0]);
 			backRight.setDesiredState(swerveModuleStates[2]);
 		}
+	}
+
+	public ChassisSpeeds getRobotRelativeSpeeds() {
+		return kinematics.toChassisSpeeds(
+			frontLeft.getState(),
+            frontRight.getState(),
+            backLeft.getState(),
+            backRight.getState()
+		);
 	}
 
 	public Pose2d getPoseMeters() {
