@@ -123,8 +123,10 @@ public final class Robot extends PhaseDrivenRobot {
 
 
 		
-		PathPlannerTrajectory examplePath = PathPlanner.loadPath("Test Path 2", new PathConstraints(1, 1));
-
+		PathPlannerTrajectory examplePath = PathPlanner.loadPath("3p", new PathConstraints(1, 1));
+		if (examplePath == null) {
+			System.out.println("PATH NULL");
+		}
 		Command fullAuto = this.drivetrain.autoBuilder.fullAuto(examplePath);
 
 
