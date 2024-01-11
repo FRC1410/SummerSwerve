@@ -1,5 +1,6 @@
 package org.frc1410.chargedup2023;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
@@ -114,25 +115,17 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void autonomousSequence() {
-		HashMap<String, Command> eventMap = new HashMap<>();
+		System.out.println("RUN AUTO");
+		// this.drivetrain.odometry.resetPosition(null, null, null);
 
-		// PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
-		PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
-	
-		SwerveAutoBuilder autoBuilder = new SwerveAutoBuilder(
-			this.drivetrain::getPoseMeters, // Pose2d supplier
-			this.drivetrain::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-			// this.kinematics, // SwerveDriveKinematics
-			new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-			new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-			this.drivetrain::driveRobotRelative, // Module states consumer used to output to the drive subsystem
-			eventMap,
-			true, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-			this.drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
-	)	;
+		// this.drivetrain.zeroYaw();
+		// this.drivetrain.resetPose(new Pose2d());
 
 
-		Command fullAuto = autoBuilder.fullAuto(examplePath);
+		
+		PathPlannerTrajectory examplePath = PathPlanner.loadPath("Test Path 2", new PathConstraints(1, 1));
+
+		Command fullAuto = this.drivetrain.autoBuilder.fullAuto(examplePath);
 
 
 		// NetworkTables.SetPersistence(autoPublisher.getTopic(), true);

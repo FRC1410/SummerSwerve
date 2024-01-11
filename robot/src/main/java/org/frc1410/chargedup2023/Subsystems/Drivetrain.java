@@ -91,11 +91,12 @@ public class Drivetrain implements TickedSubsystem {
 			BACK_LEFT_SWERVE_MODULE_LOCATION,
 			BACK_RIGHT_SWERVE_MODULE_LOCATION);
 
-	private final SwerveDriveOdometry odometry;
+	public final SwerveDriveOdometry odometry;
 
 	public boolean isLocked = false;
+	public SwerveAutoBuilder autoBuilder;
 
-	private Rotation2d desiredHeading = new Rotation2d();
+	// private Rotation2d desiredHeading = new Rotation2d();
 
 	public Drivetrain(SubsystemStore subsystems) {
 		this.frontLeft = subsystems.track(new SwerveModule(FRONT_LEFT_DRIVE_MOTOR, FRONT_LEFT_STEER_MOTOR,
@@ -150,7 +151,22 @@ public class Drivetrain implements TickedSubsystem {
         // );
 
 		// Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+		HashMap<String, Command> eventMap = new HashMap<>();
+
+		// PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
 		
+	
+		this.autoBuilder = new SwerveAutoBuilder(
+			this::getPoseMeters, // Pose2d supplier
+			this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+			// this.kinematics, // SwerveDriveKinematics
+			new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+			new PIDConstants(0.5, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+			this::driveRobotRelative, // Module states consumer used to output to the drive subsystem
+			eventMap,
+			false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+			this // The drive subsystem. Used to properly set the requirements of path following commands
+	)	;
 	}
 
 	void setModuleStates(SwerveModuleState[] a) {
@@ -174,7 +190,7 @@ public class Drivetrain implements TickedSubsystem {
 	public void zeroYaw() {
 		// System.out.println("zero Yaw");
 		this.gyro.zeroYaw();
-		this.desiredHeading = this.gyro.getRotation2d();
+		// this.desiredHeading = this.gyro.getRotation2d();
 		// yawOffset = this.gyro.getRotation2d()
 	}
 
@@ -271,8 +287,8 @@ public class Drivetrain implements TickedSubsystem {
 			// 	twist_vel.dtheta / 0.02
 			// );
 
-			var swerveModuleStates = kinematics.toSwerveModuleStates(correctForDynamics(chassisSpeeds));
-			// var swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
+			// var swerveModuleStates = kinematics.toSwerveModuleStates(correctForDynamics(chassisSpeeds));
+			var swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
 			SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, MAX_SPEED);
 
