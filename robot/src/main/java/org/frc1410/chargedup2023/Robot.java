@@ -15,11 +15,7 @@ import org.frc1410.framework.PhaseDrivenRobot;
 import org.frc1410.framework.control.Controller;
 import org.frc1410.framework.scheduler.task.TaskPersistence;
 
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 // import com.pathplanner.lib.PathPlannerTrajectory;
 // import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -123,17 +119,18 @@ public final class Robot extends PhaseDrivenRobot {
 
 
 		
-		PathPlannerTrajectory examplePath = PathPlanner.loadPath("3p", new PathConstraints(1, 1));
-		if (examplePath == null) {
-			System.out.println("PATH NULL");
-		}
-		Command fullAuto = this.drivetrain.autoBuilder.fullAuto(examplePath);
+		// PathPlannerTrajectory examplePath = PathPlanner.loadPath("3p", new PathConstraints(1, 1));
+		// if (examplePath == null) {
+		// 	System.out.println("PATH NULL");
+		// }
+		// Command fullAuto = this.drivetrain.autoBuilder.fullAuto(examplePath);
 
 
-		// NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
-		// String autoProfile = autoSubscriber.get();
-		// var autoCommand = autoSelector.select(autoProfile);
-		scheduler.scheduleAutoCommand(fullAuto);
+		// // NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
+		// // String autoProfile = autoSubscriber.get();
+		// // var autoCommand = autoSelector.select(autoProfile);
+
+		scheduler.scheduleAutoCommand(new PathPlannerAuto("3p"));
 	}
 
 	@Override

@@ -1,11 +1,10 @@
 package org.frc1410.chargedup2023.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -94,7 +93,7 @@ public class Drivetrain implements TickedSubsystem {
 	public final SwerveDriveOdometry odometry;
 
 	public boolean isLocked = false;
-	public SwerveAutoBuilder autoBuilder;
+
 
 	// private Rotation2d desiredHeading = new Rotation2d();
 
@@ -122,7 +121,7 @@ public class Drivetrain implements TickedSubsystem {
 
 		gyro.reset();
 
-		gyro.calibrate();
+		// gyro.calibrate();
 
 		// AutoBuilder.configureHolonomic(
         //         this::getPoseMeters, // Robot pose supplier
@@ -150,23 +149,49 @@ public class Drivetrain implements TickedSubsystem {
         //         this // Reference to this subsystem to set requirements
         // );
 
-		// Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
-		HashMap<String, Command> eventMap = new HashMap<>();
+	// 	// Create the AutoBuilder. This only needs to be created once when robot code starts, not every time you want to create an auto command. A good place to put this is in RobotContainer along with your subsystems.
+	// 	HashMap<String, Command> eventMap = new HashMap<>();
 
-		// PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
+	// 	// PathPlannerTrajectory examplePath = PathPlanner.loadPath("New Path", new PathConstraints(4, 3));
 		
 	
-		this.autoBuilder = new SwerveAutoBuilder(
-			this::getPoseMeters, // Pose2d supplier
-			this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
-			// this.kinematics, // SwerveDriveKinematics
-			new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
-			new PIDConstants(0, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
-			this::driveRobotRelative, // Module states consumer used to output to the drive subsystem
-			eventMap,
-			false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
-			this // The drive subsystem. Used to properly set the requirements of path following commands
-	)	;
+	// 	this.autoBuilder = new SwerveAutoBuilder(
+	// 		this::getPoseMeters, // Pose2d supplier
+	// 		this::resetPose, // Pose2d consumer, used to reset odometry at the beginning of auto
+	// 		// this.kinematics, // SwerveDriveKinematics
+	// 		new PIDConstants(5.0, 0.0, 0.0), // PID constants to correct for translation error (used to create the X and Y PID controllers)
+	// 		new PIDConstants(0, 0.0, 0.0), // PID constants to correct for rotation error (used to create the rotation controller)
+	// 		this::driveRobotRelative, // Module states consumer used to output to the drive subsystem
+	// 		eventMap,
+	// 		false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+	// 		this // The drive subsystem. Used to properly set the requirements of path following commands
+	// )	;
+
+		AutoBuilder.configureHolonomic(
+                this::getPoseMeters, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0), // Rotation PID constants
+                        4.5, // Max module speed, in m/s
+                        0.4, // Drive base radius in meters. Distance from robot center to furthest module.
+                        new ReplanningConfig() // Default path replanning config. See the API for the options here
+                ),
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
+                this // Reference to this subsystem to set requirements
+        );
 	}
 
 	void setModuleStates(SwerveModuleState[] a) {
