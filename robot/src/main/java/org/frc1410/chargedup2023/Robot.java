@@ -1,13 +1,10 @@
 package org.frc1410.chargedup2023;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
@@ -22,7 +19,6 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
-import java.util.HashMap;
 
 import org.frc1410.chargedup2023.Commands.DriveLooped;
 import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
@@ -111,7 +107,6 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void autonomousSequence() {
-		System.out.println("RUN AUTO");
 		// this.drivetrain.odometry.resetPosition(null, null, null);
 
 		// this.drivetrain.zeroYaw();

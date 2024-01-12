@@ -1,19 +1,20 @@
 package org.frc1410.chargedup2023.Subsystems;
 
-import com.ctre.phoenix.sensors.CANCoder;
+
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfigurator;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.revrobotics.CANSparkLowLevel;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 
@@ -28,11 +29,11 @@ public class SwerveModule implements TickedSubsystem {
 	private final CANSparkMax steerMotor;
 
 	private final RelativeEncoder driveEncoder;
-	private final CANCoder steerEncoder;
+	private final CANcoder steerEncoder;
 
 	// private final PIDController drivePIDController = new PIDController(SWERVE_DRIVE_KP, SWERVE_DRIVE_KI, SWERVE_DRIVE_KD);
 
-	private final SparkMaxPIDController drivePIDController;
+	private final SparkPIDController drivePIDController;
 
 	private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(SWERVE_DRIVE_KS, SWERVE_DRIVE_KV);
 	
@@ -60,7 +61,7 @@ public class SwerveModule implements TickedSubsystem {
 	public SwerveModule(int driveMotorID, int steeringMotorID, int steeringEncoderID, boolean driveMotorInverted, boolean steerMotorInverted, double offset, DoublePublisher desiredVel, DoublePublisher desiredAngle, DoublePublisher actualVel, DoublePublisher actualAngle) {
 		
 		
-		driveMotor = new CANSparkMax(driveMotorID, MotorType.kBrushless);
+		driveMotor = new CANSparkMax(driveMotorID, CANSparkLowLevel.MotorType.kBrushless);
 		driveMotor.restoreFactoryDefaults();
 		driveMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 		driveMotor.setInverted(driveMotorInverted);
@@ -75,8 +76,8 @@ public class SwerveModule implements TickedSubsystem {
 		this.drivePIDController.setFF(SWERVE_DRIVE_KFF);
 		// this.drivePIDController.setOutputRange(-1, 1);
 		// drivePIDController1.
-
-		steerMotor = new CANSparkMax(steeringMotorID, MotorType.kBrushless);
+		// CANSparkLowLevel.MotorType.kBrushless
+		steerMotor = new CANSparkMax(steeringMotorID, CANSparkLowLevel.MotorType.kBrushless);
 		steerMotor.restoreFactoryDefaults();
 		steerMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
 		steerMotor.setInverted(steerMotorInverted);
@@ -84,8 +85,14 @@ public class SwerveModule implements TickedSubsystem {
 
 		driveEncoder = driveMotor.getEncoder();
 
-		steerEncoder = new CANCoder(steeringEncoderID);
-		steerEncoder.configMagnetOffset(-offset);
+		steerEncoder = new CANcoder(steeringEncoderID);
+		// steerEncoder.configMagnetOffset(-offset);
+		CANcoderConfigurator configurator = steerEncoder.getConfigurator();
+		var config = new CANcoderConfiguration();
+		config.MagnetSensor.MagnetOffset = -offset;
+		configurator.apply(config);
+
+
 
 		turningPIDController.enableContinuousInput(-Math.PI, Math.PI);	
 
@@ -128,7 +135,7 @@ public class SwerveModule implements TickedSubsystem {
 	}
 
 	public void setDesiredState(SwerveModuleState desiredState) {
-		SwerveModuleState optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromDegrees(steerEncoder.getAbsolutePosition()));
+		SwerveModuleState optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(steerEncoder.getAbsolutePosition().getValue()));
 		this.desiredState = optimized;
 
 
@@ -166,7 +173,7 @@ public class SwerveModule implements TickedSubsystem {
 	}
 
 	public double getSteerPosition() {
-		double rem = steerEncoder.getAbsolutePosition() % 360;
+		double rem = (steerEncoder.getAbsolutePosition().getValue() * 360) % 360;
 
 		double res;
 
