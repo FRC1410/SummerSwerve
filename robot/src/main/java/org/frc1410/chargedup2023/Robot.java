@@ -14,16 +14,10 @@ import org.frc1410.framework.scheduler.task.TaskPersistence;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
-// import com.pathplanner.lib.PathPlannerTrajectory;
-// import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import static org.frc1410.chargedup2023.util.Constants.*;
-
 
 import org.frc1410.chargedup2023.Commands.DriveLooped;
 import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
-import org.frc1410.chargedup2023.Commands.Auto.Engage;
-import org.frc1410.chargedup2023.Commands.Auto.Forward;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
 public final class Robot extends PhaseDrivenRobot {
@@ -85,8 +79,11 @@ public final class Robot extends PhaseDrivenRobot {
 	}
 
 	private final AutoSelector autoSelector = new AutoSelector()
-		.add("ENGAGE", () -> new Engage(this.drivetrain))
-		.add("FORWARD", () -> new Forward(this.drivetrain));
+		.add("PR-B#-A# (3pS)", () -> new PathPlannerAuto("PR-B#-A# (3pS)"))
+		.add("PR-B#-C# (3pS)", () -> new PathPlannerAuto("PR-B#-C# (3pS)"))
+		.add("PR-A# (1p)", () -> new PathPlannerAuto("PR-A# (1p)"));
+//		.add("ENGAGE", () -> new Engage(this.drivetrain));
+//		.add("FORWARD", () -> new Forward(this.drivetrain));
 		// .add("NEW", () -> new PathPlannerAuto("New Path"));
 
 	{
@@ -99,11 +96,14 @@ public final class Robot extends PhaseDrivenRobot {
 		pub.accept(profiles);
 	}
 
+
 	private final StringPublisher autoPublisher = NetworkTables.PublisherFactory(table, "Profile",
 			autoSelector.getProfiles().isEmpty() ? "" : autoSelector.getProfiles().get(0).name());
 
 	private final StringSubscriber autoSubscriber = NetworkTables.SubscriberFactory(table, autoPublisher.getTopic());
-	//</editor-fold>
+
+
+    //</editor-fold>
 
 	@Override
 	public void autonomousSequence() {
@@ -121,11 +121,14 @@ public final class Robot extends PhaseDrivenRobot {
 		// Command fullAuto = this.drivetrain.autoBuilder.fullAuto(examplePath);
 
 
-		// // NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
-		// // String autoProfile = autoSubscriber.get();
-		// // var autoCommand = autoSelector.select(autoProfile);
+		 NetworkTables.SetPersistence(autoPublisher.getTopic(), true);
+		 String autoProfile = autoSubscriber.get();
+		 var autoCommand = autoSelector.select(autoProfile);
 
-		scheduler.scheduleAutoCommand(new PathPlannerAuto("3p"));
+//		scheduler.scheduleAutoCommand(new PathPlannerAuto("PR-B#-A# (3p)"));
+
+
+
 	}
 
 	@Override
