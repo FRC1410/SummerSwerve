@@ -30,7 +30,6 @@ public class DriveLooped extends Command {
 
 	@Override
 	public void execute() {
-		// TODO: how do axes work???
 		System.out.println(yAxis.get());
 		var xVelocity = xAxis.get() * 4;
 		var yVelocity = yAxis.get() * 4;
