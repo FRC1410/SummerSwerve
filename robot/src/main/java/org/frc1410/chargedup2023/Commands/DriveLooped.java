@@ -1,11 +1,11 @@
 package org.frc1410.chargedup2023.Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 import org.frc1410.framework.control.Axis;
 
 
-public class DriveLooped extends CommandBase {
+public class DriveLooped extends Command {
 	private final Drivetrain drivetrain;
 
 	private final Axis xAxis;
@@ -30,6 +30,8 @@ public class DriveLooped extends CommandBase {
 
 	@Override
 	public void execute() {
+		// TODO: how do axes work???
+		System.out.println(yAxis.get());
 		var xVelocity = xAxis.get() * 4;
 		var yVelocity = yAxis.get() * 4;
 		var rotation = rotationAxis.get() * 4;

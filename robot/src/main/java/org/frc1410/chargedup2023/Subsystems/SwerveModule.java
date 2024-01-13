@@ -89,7 +89,8 @@ public class SwerveModule implements TickedSubsystem {
 		// steerEncoder.configMagnetOffset(-offset);
 		CANcoderConfigurator configurator = steerEncoder.getConfigurator();
 		var config = new CANcoderConfiguration();
-		config.MagnetSensor.MagnetOffset = -offset;
+		config.MagnetSensor.MagnetOffset = offset;
+
 		configurator.apply(config);
 
 
@@ -120,10 +121,16 @@ public class SwerveModule implements TickedSubsystem {
 
 		// this.actualVel.set(getDriveVelocityMetersPerSecond());
 		// this.desiredVel.set(desiredState.speedMetersPerSecond);
-		// this.actualAngle.set(drivePIDOutput);
+		this.actualAngle.set(new Rotation2d(this.getSteerPosition()).getRotations());
 
 		// driveMotor.setVoltage(drivePIDOutput);
+
+
+
 		steerMotor.setVoltage(steerPIDOutput);
+
+
+
 
 		// steerMotor.setVoltage(12);
 		// voltage.set(turnFeedOutput);
@@ -135,7 +142,7 @@ public class SwerveModule implements TickedSubsystem {
 	}
 
 	public void setDesiredState(SwerveModuleState desiredState) {
-		SwerveModuleState optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(steerEncoder.getAbsolutePosition().getValue()));
+		SwerveModuleState optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(steerEncoder.getPosition().getValue()));
 		this.desiredState = optimized;
 
 
@@ -173,7 +180,7 @@ public class SwerveModule implements TickedSubsystem {
 	}
 
 	public double getSteerPosition() {
-		double rem = (steerEncoder.getAbsolutePosition().getValue() * 360) % 360;
+		double rem = (steerEncoder.getPosition().getValue() * 360) % 360;
 
 		double res;
 

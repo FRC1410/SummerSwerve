@@ -1,10 +1,11 @@
 package org.frc1410.chargedup2023.Commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 import org.frc1410.framework.control.Axis;
 
-public class DriveLoopedTriggers extends CommandBase {
+import edu.wpi.first.wpilibj2.command.Command;
+
+public class DriveLoopedTriggers extends Command {
     private final Drivetrain drivetrain;
 
 	private final Axis rightXAxis;

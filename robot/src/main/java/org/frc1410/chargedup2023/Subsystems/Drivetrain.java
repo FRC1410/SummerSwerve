@@ -97,11 +97,11 @@ public class Drivetrain implements TickedSubsystem {
 		this.frontLeft = subsystems.track(new SwerveModule(FRONT_LEFT_DRIVE_MOTOR, FRONT_LEFT_STEER_MOTOR,
 				FRONT_LEFT_STEER_ENCODER, false, true, FRONT_LEFT_STEER_ENCODER_OFFSET, frontLeftDesiredVel, frontLeftDesiredAngle, frontLeftActualVel, frontLeftActualAngle));
 		this.frontRight = subsystems.track(new SwerveModule(FRONT_RIGHT_DRIVE_MOTOR, FRONT_RIGHT_STEER_MOTOR,
-				FRONT_RIGHT_STEER_ENCODER, false, true, FRONT_RIGHT_STEER_ENCODER_OFFSET, frontRightDesiredVel, frontRightDesiredAngle, frontRightActualVel, frontRightActualAngle));
+				FRONT_RIGHT_STEER_ENCODER, true, true, FRONT_RIGHT_STEER_ENCODER_OFFSET, frontRightDesiredVel, frontRightDesiredAngle, frontRightActualVel, frontRightActualAngle));
 		this.backLeft = subsystems.track(new SwerveModule(BACK_LEFT_DRIVE_MOTOR, BACK_LEFT_STEER_MOTOR,
-				BACK_LEFT_STEER_ENCODER, true, true, BACK_LEFT_STEER_ENCODER_OFFSET, backLeftDesiredVel, backLeftDesiredAngle, backLeftActualVel, backLeftActualAngle));
+				BACK_LEFT_STEER_ENCODER, false, true, BACK_LEFT_STEER_ENCODER_OFFSET, backLeftDesiredVel, backLeftDesiredAngle, backLeftActualVel, backLeftActualAngle));
 		this.backRight = subsystems.track(new SwerveModule(BACK_RIGHT_DRIVE_MOTOR, BACK_RIGHT_STEER_MOTOR,
-				BACK_RIGHT_STEER_ENCODER, false, true, BACK_RIGHT_STEER_ENCODER_OFFSET, backRightDesiredVel, backRightDesiredAngle, backRightActualVel, backRightActualAngle));
+				BACK_RIGHT_STEER_ENCODER, true, true, BACK_RIGHT_STEER_ENCODER_OFFSET, backRightDesiredVel, backRightDesiredAngle, backRightActualVel, backRightActualAngle));
 
 		this.odometry = new SwerveDriveOdometry(
 				kinematics,
@@ -170,7 +170,7 @@ public class Drivetrain implements TickedSubsystem {
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
                         new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(0.1, 0.0, 0.0), // Rotation PID constants
+                        new PIDConstants(0, 0.0, 0.0), // Rotation PID constants
                         3, // Max module speed, in m/s
                         0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -180,10 +180,10 @@ public class Drivetrain implements TickedSubsystem {
                     // This will flip the path being followed to the red side of the field.
                     // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
+                    // var alliance = DriverStation.getAlliance();
+                    // if (alliance.isPresent()) {
+                    //     return alliance.get() == DriverStation.Alliance.Blue;
+                    // }
                     return false;
                 },
                 this // Reference to this subsystem to set requirements

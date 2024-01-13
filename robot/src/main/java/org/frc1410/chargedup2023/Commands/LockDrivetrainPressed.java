@@ -2,9 +2,9 @@ package org.frc1410.chargedup2023.Commands;
 
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class LockDrivetrainPressed extends CommandBase {
+public class LockDrivetrainPressed extends Command {
     private final Drivetrain drivetrain;
 
 	public LockDrivetrainPressed(Drivetrain drivetrain) {

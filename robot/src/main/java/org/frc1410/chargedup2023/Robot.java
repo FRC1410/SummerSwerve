@@ -127,7 +127,7 @@ public final class Robot extends PhaseDrivenRobot {
 
 //		scheduler.scheduleAutoCommand(new PathPlannerAuto("PR-B#-A# (3p)"));
 
-
+		scheduler.scheduleAutoCommand(autoCommand);
 
 	}
 
