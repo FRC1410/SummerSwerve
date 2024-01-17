@@ -275,6 +275,15 @@ public class Drivetrain implements TickedSubsystem {
 	// 	this.driveWithRotation(xVelocity, yVelocity, -headingAdjustment, isFieldRelative);
 	// }
 
+	public void characterize(double volts) {
+		// System.out.println("characterize volts " + volts);
+		this.navXYaw.set(volts);
+		frontLeft.driveVolts(volts);
+		frontRight.driveVolts(volts);
+		backLeft.driveVolts(volts);
+		backRight.driveVolts(volts);
+	}
+
 	public void driveRobotRelative(ChassisSpeeds speeds){
 		this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
 	}
@@ -352,7 +361,20 @@ public class Drivetrain implements TickedSubsystem {
 
 	@Override
 	public void periodic() {
-		navXYaw.set(gyro.getPitch());
+		// navXYaw.set(gyro.getPitch());
 		updateOdometry();
 	}
+
+	// rotations/second
+	public double getCharacterizationVelocity() {
+		double driveVelocityAverage = 0.0;
+		// for (var module : modules) {
+		//   driveVelocityAverage += module.getCharacterizationVelocity();
+		// }
+		driveVelocityAverage += frontLeft.getDriveVelocityRotationsPerSecond();
+		driveVelocityAverage += frontRight.getDriveVelocityRotationsPerSecond();
+		driveVelocityAverage += backLeft.getDriveVelocityRotationsPerSecond();
+		driveVelocityAverage += backRight.getDriveVelocityRotationsPerSecond();
+		return driveVelocityAverage / 4.0;
+	  }
 }

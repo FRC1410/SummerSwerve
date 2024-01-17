@@ -36,6 +36,8 @@ public class SwerveModule implements TickedSubsystem {
 	private final SparkPIDController drivePIDController;
 
 	private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(SWERVE_DRIVE_KS, SWERVE_DRIVE_KV);
+
+	private boolean isCharacterizing = false;
 	
 	// private final PIDController turningPIDController = new PIDController(SWERVE_STEERING_KP, SWERVE_STEERING_KI, SWERVE_STEERING_KD);
 	private final PIDController turningPIDController = new PIDController(
@@ -109,46 +111,59 @@ public class SwerveModule implements TickedSubsystem {
 
 	@Override
 	public void periodic() {
-		// double driveFeedOutput = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
-		// double drivePIDOutput = drivePIDController.calculate(getDriveVelocityMetersPerSecond(), desiredState.speedMetersPerSecond);
+		if (!isCharacterizing) {
+			// double driveFeedOutput = driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+			// double drivePIDOutput = drivePIDController.calculate(getDriveVelocityMetersPerSecond(), desiredState.speedMetersPerSecond);
 
 
 
-		// System.out.println("" + getDriveVelocityMetersPerSecond() + " | " + desiredState.speedMetersPerSecond);
+			// System.out.println("" + getDriveVelocityMetersPerSecond() + " | " + desiredState.speedMetersPerSecond);
 
-		double steerPIDOutput = turningPIDController.calculate(getSteerPosition(), MathUtil.angleModulus(desiredState.angle.getRadians()));
-		// double turnFeedOutput = turningFeedforward.calculate(turningPIDController.getSetpoint().velocity);
+			double steerPIDOutput = turningPIDController.calculate(getSteerPosition(), MathUtil.angleModulus(desiredState.angle.getRadians()));
+			// double turnFeedOutput = turningFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
-		// this.actualVel.set(getDriveVelocityMetersPerSecond());
-		// this.desiredVel.set(desiredState.speedMetersPerSecond);
-		this.actualAngle.set(new Rotation2d(this.getSteerPosition()).getRotations());
+			// this.actualVel.set(getDriveVelocityMetersPerSecond());
+			// this.desiredVel.set(desiredState.speedMetersPerSecond);
+			this.actualAngle.set(new Rotation2d(this.getSteerPosition()).getRotations());
 
-		// driveMotor.setVoltage(drivePIDOutput);
+			// driveMotor.setVoltage(drivePIDOutput);
 
 
 
+			steerMotor.setVoltage(steerPIDOutput);
+
+
+
+
+			// steerMotor.setVoltage(12);
+			// voltage.set(turnFeedOutput);
+			// voltage.set(getSteerPosition());
+
+
+			// voltage.set(Units.radiansToDegrees(getSteerPosition()));
+			// this.steerMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+		}
+	}
+
+	public void driveVolts(double volts) {
+		this.isCharacterizing = true;
+		this.driveMotor.setVoltage(volts);
+
+
+		double steerPIDOutput = turningPIDController.calculate(getSteerPosition(), 0);
 		steerMotor.setVoltage(steerPIDOutput);
-
-
-
-
-		// steerMotor.setVoltage(12);
-		// voltage.set(turnFeedOutput);
-		// voltage.set(getSteerPosition());
-
-
-		// voltage.set(Units.radiansToDegrees(getSteerPosition()));
-		// this.steerMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
 	}
 
 	public void setDesiredState(SwerveModuleState desiredState) {
+		this.isCharacterizing = false;
+
 		SwerveModuleState optimized = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(steerEncoder.getPosition().getValue()));
 		this.desiredState = optimized;
 
 
 
 		this.drivePIDController.setReference(metersPerSecondToEncoderRPM(optimized.speedMetersPerSecond), CANSparkMax.ControlType.kVelocity);
-		// this.actualVel.set(Math.abs(driveEncoder.getVelocity()));
+		this.actualVel.set(Math.abs(driveEncoder.getVelocity()));
 		// this.actualVel.set(this.driveMotor.get);
 		this.desiredVel.set(Math.abs(metersPerSecondToEncoderRPM(optimized.speedMetersPerSecond)));
 
@@ -165,6 +180,10 @@ public class SwerveModule implements TickedSubsystem {
 		return new SwerveModulePosition(
 			getDrivePositionMeters(), new Rotation2d(getSteerPosition())
 		);
+	}
+
+	public double getDriveVelocityRotationsPerSecond() {
+		return driveEncoder.getVelocity() / 60;
 	}
 
 	public double getDriveVelocityMetersPerSecond() {

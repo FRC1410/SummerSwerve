@@ -17,7 +17,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import static org.frc1410.chargedup2023.util.Constants.*;
 
 import org.frc1410.chargedup2023.Commands.DriveLooped;
+import org.frc1410.chargedup2023.Commands.FeedForwardCharacterization;
 import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
+import org.frc1410.chargedup2023.Commands.FeedForwardCharacterization.FeedForwardCharacterizationData;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
 public final class Robot extends PhaseDrivenRobot {
@@ -81,7 +83,13 @@ public final class Robot extends PhaseDrivenRobot {
 	private final AutoSelector autoSelector = new AutoSelector()
 		.add("PR-B#-A# (3pS)", () -> new PathPlannerAuto("PR-B#-A# (3pS)"))
 		.add("PR-B#-C# (3pS)", () -> new PathPlannerAuto("PR-B#-C# (3pS)"))
-		.add("PR-A# (1p)", () -> new PathPlannerAuto("PR-A# (1p)"));
+		.add("PR-A# (1p)", () -> new PathPlannerAuto("PR-A# (1p)"))
+		.add("DC", () -> new FeedForwardCharacterization(
+            drivetrain,
+            true,
+            new FeedForwardCharacterizationData("drive"),
+            drivetrain::characterize,
+            drivetrain::getCharacterizationVelocity));
 //		.add("ENGAGE", () -> new Engage(this.drivetrain));
 //		.add("FORWARD", () -> new Forward(this.drivetrain));
 		// .add("NEW", () -> new PathPlannerAuto("New Path"));
