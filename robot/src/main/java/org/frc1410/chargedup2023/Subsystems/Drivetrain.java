@@ -188,13 +188,8 @@ public class Drivetrain implements TickedSubsystem {
                 },
                 this // Reference to this subsystem to set requirements
         );
-	}
 
-	void setModuleStates(SwerveModuleState[] a) {
-		// this.driveRobotRelative(a);;
 	}
-
-	// private float yawOffset;
 
 	public void resetPose(Pose2d pose) {
 		this.odometry.resetPosition(

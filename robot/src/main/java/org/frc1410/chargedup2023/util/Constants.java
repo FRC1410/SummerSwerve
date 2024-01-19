@@ -40,4 +40,8 @@ public interface Constants {
 	Translation2d FRONT_RIGHT_SWERVE_MODULE_LOCATION = new Translation2d(0.263525, -0.263525);
 	Translation2d BACK_LEFT_SWERVE_MODULE_LOCATION = new Translation2d(-0.263525, 0.263525);
 	Translation2d BACK_RIGHT_SWERVE_MODULE_LOCATION = new Translation2d(-0.263525, -0.263525);
+
+	double SPEAKER_APRIL_TAG_DISTANCE = 20.25;
+
+	double RIGHT_ANGLE_TO_RAD = Math.toRadians(90);
 }

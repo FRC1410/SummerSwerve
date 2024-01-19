@@ -4,8 +4,12 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+//import org.frc1410.chargedup2023.Subsystems.Camera;
+import org.frc1410.chargedup2023.Commands.CameraTestCommand;
+import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
 import org.frc1410.framework.PhaseDrivenRobot;
@@ -25,6 +29,7 @@ public final class Robot extends PhaseDrivenRobot {
 	//<editor-fold desc="Controllers">
 	private final Controller driverController = new Controller(scheduler, DRIVER_CONTROLLER, 0.2);
 	private final Controller operatorController = new Controller(scheduler, OPERATOR_CONTROLLER, 0.2);
+
 	//</editor-fold>
 
 	//<editor-fold desc="Auto Selector">
@@ -32,6 +37,7 @@ public final class Robot extends PhaseDrivenRobot {
 	private final NetworkTable table = nt.getTable("Auto");
 
 	private final Drivetrain drivetrain = subsystems.track(new Drivetrain(subsystems));
+	private final Camera camera = subsystems.track(new Camera());
 
 	{
 		var layout = """
@@ -81,7 +87,7 @@ public final class Robot extends PhaseDrivenRobot {
 	private final AutoSelector autoSelector = new AutoSelector()
 		.add("PR-B#-A# (3pS)", () -> new PathPlannerAuto("PR-B#-A# (3pS)"))
 		.add("PR-B#-C# (3pS)", () -> new PathPlannerAuto("PR-B#-C# (3pS)"))
-		.add("PR-A# (1p)", () -> new PathPlannerAuto("PR-A# (1p)"));
+		.add("PR-A# (1pA)", () -> new PathPlannerAuto("PR-A# (1pA)"));
 //		.add("ENGAGE", () -> new Engage(this.drivetrain));
 //		.add("FORWARD", () -> new Forward(this.drivetrain));
 		// .add("NEW", () -> new PathPlannerAuto("New Path"));
@@ -133,6 +139,7 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void teleopSequence() {
+
 		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.GAMEPLAY);
 		driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
 		driverController.B.whenPressed(
@@ -141,7 +148,9 @@ public final class Robot extends PhaseDrivenRobot {
 			),
 			TaskPersistence.EPHEMERAL
 		);
-		// drivetrain.zero();
+
+		driverController.A.whenPressed(new CameraTestCommand(camera), TaskPersistence.GAMEPLAY);
+
 	}
 
 	@Override
