@@ -10,7 +10,6 @@ public class CameraTestCommand extends Command {
 
 	public CameraTestCommand(Camera camera) {
 		this.camera = camera;
-		addRequirements();
 	}
 
 	@Override
@@ -21,14 +20,20 @@ public class CameraTestCommand extends Command {
 	@Override
 	public void execute() {
 		if(camera.hasTargets()) {
-			camera.getTargetYaw(0);
-			camera.getTargetYaw(1);
+			camera.getTargetYaw();
+//			camera.getTargetYaw(1);
+			System.out.println("Target's found");
 
-			camera.getDistance();
-		} else if(camera.hasTarget()) {
-			camera.getTargetYaw(0);
-		} else {
-			System.out.println("Target / targets not found");
+//			camera.getDistance();
+//		} else if(camera.hasTargets()) {
+//			camera.getTargetYaw(0);
+//			System.out.println("Target found");
+//		} else if(!camera.hasTargets()){
+//			System.out.println("Target / targets not found");
+//		} else {
+//			System.out.println("Shits borked");
+		} else if(!camera.hasTargets()) {
+
 		}
 	}
 
@@ -39,6 +44,6 @@ public class CameraTestCommand extends Command {
 
 	@Override
 	public void end(boolean interrupted) {
-		System.out.println("Camera command shutdown");
+//		System.out.println("Camera command shutdown");
 	}
 }
