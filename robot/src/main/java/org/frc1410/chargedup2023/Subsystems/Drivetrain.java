@@ -169,8 +169,8 @@ public class Drivetrain implements TickedSubsystem {
                 this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                 this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                 new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                        new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-                        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
+                        new PIDConstants(8, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5, 0.0, 0.0), // Rotation PID constants
                         3, // Max module speed, in m/s
                         0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
                         new ReplanningConfig() // Default path replanning config. See the API for the options here
@@ -330,7 +330,9 @@ public class Drivetrain implements TickedSubsystem {
 	}
 
 	public Pose2d getPoseMeters() {
-		return this.odometry.getPoseMeters();
+		var a = this.odometry.getPoseMeters();
+		System.out.println("get pose " + a);
+		return a;
 	}
 
 	public void updateOdometry() {

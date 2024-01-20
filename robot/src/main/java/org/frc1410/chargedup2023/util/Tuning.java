@@ -6,10 +6,11 @@ public interface Tuning {
 
 	// PID values for drive motor
 	
-	double SWERVE_DRIVE_KP = 0.00001;
-	// double SWERVE_DRIVE_KP = 0;
+	// double SWERVE_DRIVE_KP = 0.00012;
+	double SWERVE_DRIVE_KP = 0.00002;
 	double SWERVE_DRIVE_KI = 0;
-	double SWERVE_DRIVE_KD = 0.0003;
+	double SWERVE_DRIVE_KD = 0.000;
+	
 	double SWERVE_DRIVE_KFF = 0.00081 / DRIVE_WHEEL_FREE_SPEED_METERS_PER_SECOND;
 
 	// PID values for the steering motor

@@ -119,7 +119,7 @@ public class SwerveModule implements TickedSubsystem {
 		double steerPIDOutput = turningPIDController.calculate(getSteerPosition(), MathUtil.angleModulus(desiredState.angle.getRadians()));
 		// double turnFeedOutput = turningFeedforward.calculate(turningPIDController.getSetpoint().velocity);
 
-		// this.actualVel.set(getDriveVelocityMetersPerSecond());
+		this.actualVel.set(getDriveVelocityMetersPerSecond());
 		// this.desiredVel.set(desiredState.speedMetersPerSecond);
 		this.actualAngle.set(new Rotation2d(this.getSteerPosition()).getRotations());
 
@@ -150,7 +150,7 @@ public class SwerveModule implements TickedSubsystem {
 		this.drivePIDController.setReference(metersPerSecondToEncoderRPM(optimized.speedMetersPerSecond), CANSparkMax.ControlType.kVelocity);
 		// this.actualVel.set(Math.abs(driveEncoder.getVelocity()));
 		// this.actualVel.set(this.driveMotor.get);
-		this.desiredVel.set(Math.abs(metersPerSecondToEncoderRPM(optimized.speedMetersPerSecond)));
+		this.desiredVel.set(optimized.speedMetersPerSecond);
 
 
 		// this.desiredAngle.set(optimized.angle.getDegrees());
