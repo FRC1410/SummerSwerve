@@ -7,6 +7,7 @@ import edu.wpi.first.networktables.StringSubscriber;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
+//import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.Commands.CameraTestCommand;
 import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.util.NetworkTables;
@@ -19,9 +20,9 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
-//import org.frc1410.chargedup2023.Commands.DriveLooped;
-//import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
-//import org.frc1410.chargedup2023.Subsystems.Drivetrain;
+import org.frc1410.chargedup2023.Commands.DriveLooped;
+import org.frc1410.chargedup2023.Commands.LockDrivetrainHeld;
+import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
 public final class Robot extends PhaseDrivenRobot {
 
@@ -35,7 +36,7 @@ public final class Robot extends PhaseDrivenRobot {
 	private final NetworkTableInstance nt = NetworkTableInstance.getDefault();
 	private final NetworkTable table = nt.getTable("Auto");
 
-//	private final Drivetrain drivetrain = subsystems.track(new Drivetrain(subsystems));
+	private final Drivetrain drivetrain = subsystems.track(new Drivetrain(subsystems));
 	private final Camera camera = subsystems.track(new Camera());
 
 	{
@@ -138,15 +139,15 @@ public final class Robot extends PhaseDrivenRobot {
 
 	@Override
 	public void teleopSequence() {
-//
-//		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.GAMEPLAY);
-//		driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
-//		driverController.B.whenPressed(
-//			new InstantCommand(
-//				() -> { drivetrain.zeroYaw(); }
-//			),
-//			TaskPersistence.EPHEMERAL
-//		);
+
+		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.GAMEPLAY);
+		driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
+		driverController.B.whenPressed(
+			new InstantCommand(
+				() -> { drivetrain.zeroYaw(); }
+			),
+			TaskPersistence.EPHEMERAL
+		);
 
 		driverController.A.whenPressed(new CameraTestCommand(camera), TaskPersistence.GAMEPLAY);
 

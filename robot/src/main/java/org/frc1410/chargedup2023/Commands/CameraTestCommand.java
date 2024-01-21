@@ -20,9 +20,10 @@ public class CameraTestCommand extends Command {
 	@Override
 	public void execute() {
 		if(camera.hasTargets()) {
-			camera.getTargetYaw();
+			
+			// camera.getTargetYaw();
 //			camera.getTargetYaw(1);
-			System.out.println("Target's found");
+			System.out.println("Target's found " + camera.getTargetYaw());
 
 //			camera.getDistance();
 //		} else if(camera.hasTargets()) {

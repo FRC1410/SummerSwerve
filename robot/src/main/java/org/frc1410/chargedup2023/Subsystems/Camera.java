@@ -41,6 +41,7 @@ public class Camera implements Subsystem {
 
 	public boolean hasTargets() {
 		return camera.getLatestResult().hasTargets();
+		// camera.getLatestResult().getMultiTagResult()
 	}
 
 	public double getTargetYaw() {
