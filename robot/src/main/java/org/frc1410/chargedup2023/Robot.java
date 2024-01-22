@@ -1,5 +1,14 @@
 package org.frc1410.chargedup2023;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindHolonomic;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringPublisher;
@@ -8,8 +17,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 //import org.frc1410.chargedup2023.Subsystems.Camera;
-import org.frc1410.chargedup2023.Commands.CameraTestCommand;
 import org.frc1410.chargedup2023.Subsystems.Camera;
+import org.frc1410.chargedup2023.util.Constants;
 import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
 import org.frc1410.framework.PhaseDrivenRobot;
@@ -149,7 +158,33 @@ public final class Robot extends PhaseDrivenRobot {
 			TaskPersistence.EPHEMERAL
 		);
 
-		driverController.A.whenPressed(new CameraTestCommand(camera), TaskPersistence.GAMEPLAY);
+//		driverController.A.whenPressed(new CameraTestCommand(camera), TaskPersistence.GAMEPLAY);
+
+		Pose2d shootingPoses = new Pose2d(1.31, 5.52, new Rotation2d(0));
+
+		PathConstraints constraints = new PathConstraints(
+			3.0, 4.0,
+			Units.degreesToRadians(540), Units.degreesToRadians(720));
+
+		Command pathfindingCommand = new PathfindHolonomic(
+			shootingPoses,
+			constraints,
+			0.0,
+			drivetrain::getPoseMeters,
+			drivetrain::getRobotRelativeSpeeds,
+			drivetrain::driveRobotRelative,
+			new HolonomicPathFollowerConfig(
+				new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+				new PIDConstants(1.5, 0.0, 0.0), // Rotation PID constants
+				3, // Max module speed, in m/s
+				0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
+				new ReplanningConfig() // Default path replanning config. See the API for the options here
+			),
+			0.0,
+			this.drivetrain
+		);
+
+		driverController.LEFT_BUMPER.whenPressed(pathfindingCommand, TaskPersistence.EPHEMERAL);
 
 	}
 

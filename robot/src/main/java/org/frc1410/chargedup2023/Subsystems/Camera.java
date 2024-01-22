@@ -4,6 +4,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -22,9 +23,9 @@ public class Camera implements Subsystem {
 
 	private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
 	private final NetworkTable table = instance.getTable("Vision Data");
-//	DoublePublisher distancePub = NetworkTables.PublisherFactory(table, "Distance from target", 0);
-//	DoublePublisher aprilYawPub = NetworkTables.PublisherFactory(table, "Camera Yaw" , 0);
-//	DoublePublisher aprilYawPubTwo = NetworkTables.PublisherFactory(table, "Second Camera Yaw", 0);
+	DoublePublisher distancePub = NetworkTables.PublisherFactory(table, "Distance from target", 0);
+	DoublePublisher aprilYawPub = NetworkTables.PublisherFactory(table, "Camera Yaw" , 0);
+	DoublePublisher aprilYawPubTwo = NetworkTables.PublisherFactory(table, "Second Camera Yaw", 0);
 
 
 	private final PhotonCamera camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
@@ -44,15 +45,25 @@ public class Camera implements Subsystem {
 		// camera.getLatestResult().getMultiTagResult()
 	}
 
-	public double getTargetYaw() {
+	public int getlength() {
+		List<PhotonTrackedTarget> targets = camera.getLatestResult().getTargets();
+		return targets.size();
+	}
+
+	public double getTargetYaw(int targetIndex) {
 
 		var result = camera.getLatestResult();
-//		List<PhotonTrackedTarget> targets = result.getTargets();
-//
-//		PhotonTrackedTarget selectedTarget = targets.get(targetIndex);
-		PhotonTrackedTarget selectedTarget = result.getBestTarget();
-		return selectedTarget.getYaw();
+		List<PhotonTrackedTarget> targets = result.getTargets();
 
+		PhotonTrackedTarget selectedTarget = targets.get(targetIndex);
+//		PhotonTrackedTarget selectedTarget = result.getBestTarget();
+		return selectedTarget.getYaw();
+	}
+
+	public Transform3d getCameraToApril() {
+		var result = camera.getLatestResult();
+
+		return result.getBestTarget().getBestCameraToTarget();
 	}
 
 
@@ -62,7 +73,7 @@ public class Camera implements Subsystem {
 //			(Math.sin(RIGHT_ANGLE_TO_RAD - Math.toRadians(getTargetYaw(1))))
 //				* (SPEAKER_APRIL_TAG_DISTANCE / Math.sin(Math.toRadians(getTargetYaw(0) + getTargetYaw(1))));
 //
-//		double distanceFromTarget = (RIGHT_ANGLE_TO_RAD - getTargetYaw(0)) * (hypotenuseOne / Math.sin(RIGHT_ANGLE_TO_RAD));
+//		double distanceFromTarget = (RIGHT_ANGLE_TO_RAD - Math.toRadians(getTargetYaw(0))) * (hypotenuseOne / Math.sin(RIGHT_ANGLE_TO_RAD));
 //		return distanceFromTarget;
 //	}
 
@@ -71,11 +82,4 @@ public class Camera implements Subsystem {
 //
 //		return new Pose2d(xCordinate, getDistance(), new Rotation2d(0));
 //	}
-	@Override
-	public void periodic() {
-
-//		distancePub.set(getDistance());
-//		aprilYawPub.set(getTargetYaw());
-//		aprilYawPubTwo.set(getTargetYaw(1));
-	}
 }
