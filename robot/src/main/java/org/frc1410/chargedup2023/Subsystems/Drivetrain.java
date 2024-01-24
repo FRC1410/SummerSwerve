@@ -2,6 +2,7 @@ package org.frc1410.chargedup2023.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -21,6 +22,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -28,6 +30,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import org.frc1410.framework.scheduler.subsystem.SubsystemStore;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
 import org.photonvision.PhotonCamera;
@@ -211,7 +214,7 @@ public class Drivetrain implements TickedSubsystem {
                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                       new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+                       new PIDConstants(1.5, 0.0, 0.0), // Translation PID constants
                        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
                        3, // Max module speed, in m/s
                        0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -430,5 +433,7 @@ public class Drivetrain implements TickedSubsystem {
 		var pose = this.getPoseMeters();
 		this.poseX.set(pose.getX());
 		this.poseY.set(pose.getY());
+
+		System.out.println("Robot pose: " + getPoseMeters());
 	}
 }

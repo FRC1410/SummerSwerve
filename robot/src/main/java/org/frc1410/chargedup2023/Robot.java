@@ -149,7 +149,7 @@ public final class Robot extends PhaseDrivenRobot {
 	@Override
 	public void teleopSequence() {
 
-		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.GAMEPLAY);
+		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.EPHEMERAL);
 		driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
 		driverController.B.whenPressed(
 			new InstantCommand(
@@ -158,9 +158,7 @@ public final class Robot extends PhaseDrivenRobot {
 			TaskPersistence.EPHEMERAL
 		);
 
-//		driverController.A.whenPressed(new CameraTestCommand(camera), TaskPersistence.GAMEPLAY);
-
-		Pose2d shootingPoses = new Pose2d(1.31, 5.52, new Rotation2d(0));
+		Pose2d shootingPoses = new Pose2d(0.20, 6.62, new Rotation2d(0));
 
 		PathConstraints constraints = new PathConstraints(
 			3.0, 4.0,
@@ -174,14 +172,14 @@ public final class Robot extends PhaseDrivenRobot {
 			drivetrain::getRobotRelativeSpeeds,
 			drivetrain::driveRobotRelative,
 			new HolonomicPathFollowerConfig(
-				new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-				new PIDConstants(1.5, 0.0, 0.0), // Rotation PID constants
+				new PIDConstants(1, 0.0, 1), // Translation PID constants
+				new PIDConstants(0.95, 0.0, 0.0), // Rotation PID constants
 				3, // Max module speed, in m/s
 				0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
 				new ReplanningConfig() // Default path replanning config. See the API for the options here
 			),
-			0.0,
-			this.drivetrain
+			0.5,
+			drivetrain
 		);
 
 		driverController.LEFT_BUMPER.whenPressed(pathfindingCommand, TaskPersistence.EPHEMERAL);

@@ -19,7 +19,7 @@ import static org.frc1410.chargedup2023.util.Constants.*;
 import java.io.IOException;
 import java.util.List;
 
-public class Camera implements Subsystem {
+public class Camera implements TickedSubsystem {
 
 	private final NetworkTableInstance instance = NetworkTableInstance.getDefault();
 	private final NetworkTable table = instance.getTable("Vision Data");
@@ -64,6 +64,11 @@ public class Camera implements Subsystem {
 		var result = camera.getLatestResult();
 
 		return result.getBestTarget().getBestCameraToTarget();
+	}
+
+	@Override
+	public void periodic() {
+
 	}
 
 
