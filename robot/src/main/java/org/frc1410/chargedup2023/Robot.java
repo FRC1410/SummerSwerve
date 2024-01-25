@@ -23,6 +23,7 @@ import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
 import org.frc1410.framework.PhaseDrivenRobot;
 import org.frc1410.framework.control.Controller;
+import org.frc1410.framework.scheduler.task.Task;
 import org.frc1410.framework.scheduler.task.TaskPersistence;
 
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -158,11 +159,12 @@ public final class Robot extends PhaseDrivenRobot {
 			TaskPersistence.EPHEMERAL
 		);
 
-		Pose2d shootingPoses = new Pose2d(0.20, 6.62, new Rotation2d(0));
+		Pose2d shootingPoses = new Pose2d(2.95, -0.63, new Rotation2d(0));
 
 		PathConstraints constraints = new PathConstraints(
-			3.0, 4.0,
+			3.2, 4.0,
 			Units.degreesToRadians(540), Units.degreesToRadians(720));
+
 
 		Command pathfindingCommand = new PathfindHolonomic(
 			shootingPoses,
@@ -172,7 +174,7 @@ public final class Robot extends PhaseDrivenRobot {
 			drivetrain::getRobotRelativeSpeeds,
 			drivetrain::driveRobotRelative,
 			new HolonomicPathFollowerConfig(
-				new PIDConstants(1, 0.0, 1), // Translation PID constants
+				new PIDConstants(2, 0.0, 0.8), // Translation PID constants
 				new PIDConstants(0.95, 0.0, 0.0), // Rotation PID constants
 				3, // Max module speed, in m/s
 				0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -182,7 +184,8 @@ public final class Robot extends PhaseDrivenRobot {
 			drivetrain
 		);
 
-		driverController.LEFT_BUMPER.whenPressed(pathfindingCommand, TaskPersistence.EPHEMERAL);
+
+		driverController.LEFT_BUMPER.whileHeld(pathfindingCommand, TaskPersistence.GAMEPLAY);
 
 	}
 

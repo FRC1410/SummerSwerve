@@ -2,6 +2,7 @@ package org.frc1410.chargedup2023.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathfindHolonomic;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -154,8 +155,8 @@ public class Drivetrain implements TickedSubsystem {
 		try {
 			layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
 			var alliance = DriverStation.getAlliance();
-			layout.setOrigin(alliance == Optional.of(Alliance.Blue) ?
-          		OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
+//			layout.setOrigin(alliance == Optional.of(Alliance.Blue) ?
+//          		OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
 		} catch(IOException e) {
 			DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
 			layout = null;
@@ -214,7 +215,7 @@ public class Drivetrain implements TickedSubsystem {
                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
                new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                       new PIDConstants(1.5, 0.0, 0.0), // Translation PID constants
+                       new PIDConstants(1, 0.0, 0.0), // Translation PID constants
                        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
                        3, // Max module speed, in m/s
                        0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
@@ -225,10 +226,10 @@ public class Drivetrain implements TickedSubsystem {
                    // This will flip the path being followed to the red side of the field.
                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-                   // var alliance = DriverStation.getAlliance();
-                   // if (alliance.isPresent()) {
-                   //     return alliance.get() == DriverStation.Alliance.Blue;
-                   // }
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Blue;
+                    }
                    return false;
                },
                this // Reference to this subsystem to set requirements
@@ -416,7 +417,7 @@ public class Drivetrain implements TickedSubsystem {
 			var fiducialId = target.getFiducialId();
 			// pipelineResult.
 			
-			System.out.println(target.getBestCameraToTarget());
+//			System.out.println(target.getBestCameraToTarget());
 
 			// Get the tag pose from field layout - consider that the layout will be null if it failed to load
 			Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
@@ -434,6 +435,6 @@ public class Drivetrain implements TickedSubsystem {
 		this.poseX.set(pose.getX());
 		this.poseY.set(pose.getY());
 
-		System.out.println("Robot pose: " + getPoseMeters());
+		System.out.println(getPoseMeters());
 	}
 }

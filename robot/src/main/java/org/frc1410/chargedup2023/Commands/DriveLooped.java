@@ -41,7 +41,7 @@ public class DriveLooped extends Command {
 			drivetrain.isLocked = false;
 		}
 
-		drivetrain.drive(xVelocity, yVelocity, rotation, false);
+		drivetrain.drive(xVelocity, yVelocity, rotation, true);
 
 		previousTickHadInput = hasInput;
 
