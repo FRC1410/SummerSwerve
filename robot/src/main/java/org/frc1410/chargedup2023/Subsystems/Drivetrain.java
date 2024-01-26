@@ -210,13 +210,7 @@ public class Drivetrain implements TickedSubsystem {
                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
                this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
-               new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                       new PIDConstants(1, 0.0, 0.0), // Translation PID constants
-                       new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
-                       3, // Max module speed, in m/s
-                       0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
-                       new ReplanningConfig() // Default path replanning config. See the API for the options here
-               ),
+               holonomicPathFollowerConfig,
                () -> {
                    // Boolean supplier that controls when the path will be mirrored for the red alliance
                    // This will flip the path being followed to the red side of the field.
@@ -420,9 +414,10 @@ public class Drivetrain implements TickedSubsystem {
 
             // Get the tag pose from field layout - consider that the layout will be null if it failed to load
             Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
-            System.out.println("tag pose is " + tagPose);
+            
             if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
                 var targetPose = tagPose.get();
+				System.out.println("tag pose angle " + tagPose.get().getRotation().toRotation2d());
                 Transform3d camToTarget = target.getBestCameraToTarget();
                 Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
 
@@ -430,6 +425,7 @@ public class Drivetrain implements TickedSubsystem {
                 poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), resultTimestamp);
             }
         }
+		
         System.out.println(this.getPoseMeters());
         var pose = this.getPoseMeters();
         this.poseX.set(pose.getX());

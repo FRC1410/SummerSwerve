@@ -1,5 +1,9 @@
 package org.frc1410.chargedup2023.util;
 
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
+
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -48,5 +52,13 @@ public interface Constants {
 
     double RIGHT_ANGLE_TO_RAD = Math.toRadians(90);
 
-    Transform3d cameraToRobot = new Transform3d(new Translation3d(), new Rotation3d(0, 0, 180));
+    Transform3d cameraToRobot = new Transform3d(new Translation3d(), new Rotation3d(0, 0, Math.PI));
+
+	HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
+        new PIDConstants(1, 0.0, 0.0), // Translation PID constants
+        new PIDConstants(1, 0.0, 0.0), // Rotation PID constants
+        3, // Max module speed, in m/s
+        0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
+        new ReplanningConfig() // Default path replanning config. See the API for the options here
+    );
 }

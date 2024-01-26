@@ -159,11 +159,11 @@ public final class Robot extends PhaseDrivenRobot {
 			TaskPersistence.EPHEMERAL
 		);
 
-		Pose2d shootingPoses = new Pose2d(2.95, -0.63, new Rotation2d(0));
+		Pose2d shootingPoses = new Pose2d(1.30, 5.52, new Rotation2d(0));
 
 		PathConstraints constraints = new PathConstraints(
 			3.2, 4.0,
-			Units.degreesToRadians(540), Units.degreesToRadians(720));
+			Units.degreesToRadians(150), Units.degreesToRadians(150));
 
 
 		Command pathfindingCommand = new PathfindHolonomic(
@@ -173,17 +173,10 @@ public final class Robot extends PhaseDrivenRobot {
 			drivetrain::getPoseMeters,
 			drivetrain::getRobotRelativeSpeeds,
 			drivetrain::driveRobotRelative,
-			new HolonomicPathFollowerConfig(
-				new PIDConstants(2, 0.0, 0.8), // Translation PID constants
-				new PIDConstants(0.95, 0.0, 0.0), // Rotation PID constants
-				3, // Max module speed, in m/s
-				0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
-				new ReplanningConfig() // Default path replanning config. See the API for the options here
-			),
-			0.5,
+			holonomicPathFollowerConfig,
+			0,
 			drivetrain
 		);
-
 
 		driverController.LEFT_BUMPER.whileHeld(pathfindingCommand, TaskPersistence.GAMEPLAY);
 
