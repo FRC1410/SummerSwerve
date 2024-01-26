@@ -313,11 +313,13 @@ public class Drivetrain implements TickedSubsystem {
     // }
 
     public void driveRobotRelative(ChassisSpeeds speeds){
+		System.out.println("drive robot relative " + speeds);
         this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
     }
 
     public void drive(double xVelocity, double yVelocity, double rotation, boolean isFieldRelative) {
         if (isLocked) {
+			System.out.println("LOCKED");
             frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(45)));
             frontRight.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
             backLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(135)));
@@ -359,10 +361,10 @@ public class Drivetrain implements TickedSubsystem {
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return kinematics.toChassisSpeeds(
-            frontLeft.getState(),
-           frontRight.getState(),
-           backLeft.getState(),
-           backRight.getState()
+        	frontLeft.getState(),
+           	frontRight.getState(),
+           	backLeft.getState(),
+           	backRight.getState()
         );
     }
 

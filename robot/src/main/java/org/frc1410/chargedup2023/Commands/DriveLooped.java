@@ -22,6 +22,8 @@ public class DriveLooped extends Command {
 		this.xAxis = xAxis;
 		this.yAxis = yAxis;
 		this.rotationAxis = rotationAxis;
+
+		addRequirements(drivetrain);
 	}
 
 	@Override
@@ -41,10 +43,10 @@ public class DriveLooped extends Command {
 			drivetrain.isLocked = false;
 		}
 
+		System.out.println("does have input");
 		drivetrain.drive(xVelocity, yVelocity, rotation, true);
 
 		previousTickHadInput = hasInput;
-
 	}
 
 	@Override

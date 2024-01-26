@@ -175,11 +175,10 @@ public final class Robot extends PhaseDrivenRobot {
 			drivetrain::driveRobotRelative,
 			holonomicPathFollowerConfig,
 			0,
-			drivetrain
+			this.drivetrain
 		);
 
 		driverController.LEFT_BUMPER.whileHeld(pathfindingCommand, TaskPersistence.GAMEPLAY);
-
 	}
 
 	@Override
