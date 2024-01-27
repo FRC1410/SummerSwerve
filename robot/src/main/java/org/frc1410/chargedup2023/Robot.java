@@ -7,7 +7,7 @@ import edu.wpi.first.networktables.StringSubscriber;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 //import org.frc1410.chargedup2023.Subsystems.Camera;
-import org.frc1410.chargedup2023.Commands.PathfindToPose;
+import org.frc1410.chargedup2023.Commands.PathFindToNearestPose;
 import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.util.NetworkTables;
 import org.frc1410.framework.AutoSelector;
@@ -76,7 +76,7 @@ public final class Robot extends PhaseDrivenRobot {
 			TaskPersistence.EPHEMERAL
 		);
 
-		driverController.RIGHT_BUMPER.whileHeldOnce(new PathfindToPose(drivetrain), TaskPersistence.GAMEPLAY);
+		driverController.RIGHT_BUMPER.whileHeldOnce(new PathFindToNearestPose(drivetrain), TaskPersistence.GAMEPLAY);
 	}
 
 	@Override
