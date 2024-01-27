@@ -6,22 +6,22 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
-public class PathfindToPose extends Command {
+public class PathFindToNearestPose extends Command {
 
 	private final Drivetrain drivetrain;
 	private final PathfindHolonomic pathfindHolonomic;
 
-	public PathfindToPose(Drivetrain drivetrain) {
+	public PathFindToNearestPose(Drivetrain drivetrain) {
 
 		List<Pose2d> shootingPoses = Arrays.asList(
 			new Pose2d(1.36, 5.52, new Rotation2d(0)),
-			new Pose2d(3, 3, new Rotation2d(0))
+			new Pose2d(1.94, 6.15, new Rotation2d(Math.toRadians(20.5))),
+			new Pose2d(1.88, 5, new Rotation2d(Math.toRadians(-19.6)))
 		);
 
 		Pose2d curentRobotPose = drivetrain.getPoseMeters();
