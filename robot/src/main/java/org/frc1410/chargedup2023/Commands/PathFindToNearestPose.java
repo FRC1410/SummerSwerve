@@ -5,6 +5,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
+import org.frc1410.chargedup2023.util.ShootingPositions;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,19 +14,18 @@ import static org.frc1410.chargedup2023.util.Constants.*;
 
 public class PathFindToNearestPose extends Command {
 
-	private final Drivetrain drivetrain;
-	private final PathfindHolonomic pathfindHolonomic;
+    private final PathfindHolonomic pathfindHolonomic;
 
 	public PathFindToNearestPose(Drivetrain drivetrain) {
 
-		List<Pose2d> shootingPoses = Arrays.asList(
-			new Pose2d(1.36, 5.52, new Rotation2d(0)),
-			new Pose2d(1.94, 6.15, new Rotation2d(Math.toRadians(20.5))),
-			new Pose2d(1.88, 5, new Rotation2d(Math.toRadians(-19.6)))
+		List<ShootingPositions> shootingPositions = Arrays.asList(
+			new ShootingPositions(new Pose2d(1.36, 5.52, Rotation2d.fromDegrees(0)), 0),
+			new ShootingPositions(new Pose2d(1.94, 6.15, Rotation2d.fromDegrees(20.5)), 0),
+			new ShootingPositions(new Pose2d(1.88, 5, Rotation2d.fromDegrees(-19.6)), 0)
 		);
 
-		Pose2d curentRobotPose = drivetrain.getPoseMeters();
-		Pose2d nearestPose = curentRobotPose.nearest(shootingPoses);
+		Pose2d currentRobotPose = drivetrain.getPoseMeters();
+		Pose2d nearestPose = currentRobotPose.nearest(shootingPositions.stream().map(position -> position.pose2d).toList());
 
 		pathfindHolonomic = new PathfindHolonomic(
 			nearestPose,
@@ -38,8 +38,6 @@ public class PathFindToNearestPose extends Command {
 			0.0,
 			drivetrain
 		);
-
-		this.drivetrain = drivetrain;
     }
 
 	@Override

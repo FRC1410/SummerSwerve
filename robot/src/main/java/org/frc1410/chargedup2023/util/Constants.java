@@ -19,15 +19,11 @@ public interface Constants {
     // Swerve module constants
     double DRIVING_GEAR_RATIO = (50.0 / 14.0) * (17.0 / 27.0) * (45.0 / 15.0);
     double DRIVE_ROTATIONS_TO_METERES = (1.0 / DRIVING_GEAR_RATIO) * (2 * 0.0508 * Math.PI);
-    double MAX_ANGULAR_VEL = 25.57;
-    double MAX_ANGULAR_ACC = 100;  // radians per sec squared
+
+//    double MAX_ANGULAR_VEL = 25.57;
+//    double MAX_ANGULAR_ACC = 100;  // radians per sec squared
     double MAX_SPEED = 4.2;
     // double MAX_ANGULAR_SPEED = Math.PI;
-
-    double FL_ANGLE_OFFSET = 27.9;
-    double BL_ANGLE_OFFSET = 78.0;
-    double FR_ANGLE_OFFSET = 89.3;
-    double BR_ANGLE_OFFSET = 20.9;
 
     double DRIVE_MOTOR_FREE_SPEED_RPM = 5676;
     double DRIVE_MOTOR_FREE_SPEED_RPS = DRIVE_MOTOR_FREE_SPEED_RPM / 60;

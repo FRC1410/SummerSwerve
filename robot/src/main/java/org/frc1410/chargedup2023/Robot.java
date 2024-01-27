@@ -25,7 +25,6 @@ import org.frc1410.chargedup2023.Subsystems.Drivetrain;
 public final class Robot extends PhaseDrivenRobot {
 
 	private final Controller driverController = new Controller(scheduler, DRIVER_CONTROLLER, 0.2);
-	private final Controller operatorController = new Controller(scheduler, OPERATOR_CONTROLLER, 0.2);
 
 	private final NetworkTableInstance nt = NetworkTableInstance.getDefault();
 	private final NetworkTable table = nt.getTable("Auto");
@@ -68,7 +67,7 @@ public final class Robot extends PhaseDrivenRobot {
 	public void teleopSequence() {
 
 		scheduler.scheduleDefaultCommand(new DriveLooped(drivetrain, driverController.LEFT_Y_AXIS, driverController.LEFT_X_AXIS, driverController.RIGHT_X_AXIS), TaskPersistence.EPHEMERAL);
-		// driverController.A.whileHeld(new LockDrivetrainHeld(drivetrain), TaskPersistence.EPHEMERAL);
+
 		driverController.B.whenPressed(
 			new InstantCommand(
 				() -> { drivetrain.zeroYaw(); }
