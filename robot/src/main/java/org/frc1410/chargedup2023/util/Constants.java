@@ -1,5 +1,6 @@
 package org.frc1410.chargedup2023.util;
 
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 public interface Constants {
     // Controller constants
@@ -61,4 +63,8 @@ public interface Constants {
         0.372680629, // Drive base radius in meters. Distance from robot center to furthest module.
         new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
+
+	PathConstraints constraints = new PathConstraints(
+			3.2, 4.0,
+			Units.degreesToRadians(150), Units.degreesToRadians(150));
 }
