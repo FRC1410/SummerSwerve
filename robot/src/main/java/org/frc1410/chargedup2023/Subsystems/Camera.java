@@ -70,21 +70,4 @@ public class Camera implements TickedSubsystem {
 	public void periodic() {
 
 	}
-
-
-//	public double getDistance() {
-//
-//		double hypotenuseOne =
-//			(Math.sin(RIGHT_ANGLE_TO_RAD - Math.toRadians(getTargetYaw(1))))
-//				* (SPEAKER_APRIL_TAG_DISTANCE / Math.sin(Math.toRadians(getTargetYaw(0) + getTargetYaw(1))));
-//
-//		double distanceFromTarget = (RIGHT_ANGLE_TO_RAD - Math.toRadians(getTargetYaw(0))) * (hypotenuseOne / Math.sin(RIGHT_ANGLE_TO_RAD));
-//		return distanceFromTarget;
-//	}
-
-//	public Pose2d getRobotCameraPose() {
-//		double xCordinate = Math.sin(getTargetYaw(0) * (getDistance() / (90 - getTargetYaw(0))));
-//
-//		return new Pose2d(xCordinate, getDistance(), new Rotation2d(0));
-//	}
 }
