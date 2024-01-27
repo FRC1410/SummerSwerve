@@ -6,7 +6,6 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.networktables.StringSubscriber;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-//import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.Commands.PathFindToNearestPose;
 import org.frc1410.chargedup2023.Subsystems.Camera;
 import org.frc1410.chargedup2023.util.NetworkTables;

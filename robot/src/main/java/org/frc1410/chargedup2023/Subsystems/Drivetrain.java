@@ -99,21 +99,16 @@ public class Drivetrain implements TickedSubsystem {
 
     private final AprilTagFieldLayout aprilTagFieldLayout;
 
-    // private final PIDController headingPidController = new PIDController(2, 0, 0);
-
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             FRONT_LEFT_SWERVE_MODULE_LOCATION,
             FRONT_RIGHT_SWERVE_MODULE_LOCATION,
             BACK_LEFT_SWERVE_MODULE_LOCATION,
             BACK_RIGHT_SWERVE_MODULE_LOCATION);
 
-    // public final SwerveDriveOdometry odometry;
     private final SwerveDrivePoseEstimator poseEstimator;
 
     public boolean isLocked = false;
 
-
-    // private Rotation2d desiredHeading = new Rotation2d();
 
     public Drivetrain(SubsystemStore subsystems) {
         this.frontLeft = subsystems.track(new SwerveModule(FRONT_LEFT_DRIVE_MOTOR, FRONT_LEFT_STEER_MOTOR,
@@ -151,15 +146,12 @@ public class Drivetrain implements TickedSubsystem {
         this.aprilTagFieldLayout = layout;
 
         AutoBuilder.configureHolonomic(
-               this::getPoseMeters, // Robot pose supplier
-               this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-               this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-               this::driveRobotRelative, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
+               this::getPoseMeters,
+               this::resetPose,
+               this::getRobotRelativeSpeeds,
+               this::driveRobotRelative,
                holonomicPathFollowerConfig,
                () -> {
-                   // Boolean supplier that controls when the path will be mirrored for the red alliance
-                   // This will flip the path being followed to the red side of the field.
-                   // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
                    // var alliance = DriverStation.getAlliance();
                    // if (alliance.isPresent()) {
@@ -167,7 +159,7 @@ public class Drivetrain implements TickedSubsystem {
                    // }
                    return false;
                },
-               this // Reference to this subsystem to set requirements
+               this
        );
 
     }
@@ -196,8 +188,6 @@ public class Drivetrain implements TickedSubsystem {
         // this.desiredHeading = this.gyro.getRotation2d();
         // yawOffset = this.gyro.getRotation2d()
     }
-
-
 
     public void zero() {
         frontLeft.setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(0)));
@@ -251,12 +241,6 @@ public class Drivetrain implements TickedSubsystem {
         return discretize(continuousSpeeds.vxMetersPerSecond, continuousSpeeds.vyMetersPerSecond, continuousSpeeds.omegaRadiansPerSecond, dt);
     }
 
-    // public void driveKeepingHeading(double xVelocity, double yVelocity, boolean isFieldRelative) {
-    //     var headingAdjustment = this.headingPidController.calculate(this.gyro.getRotation2d().getRadians(), this.desiredHeading.getRadians());
-    //     // navXYaw.set(-headingAdjustment);
-    //     this.driveWithRotation(xVelocity, yVelocity, -headingAdjustment, isFieldRelative);
-    // }
-
     public void driveRobotRelative(ChassisSpeeds speeds){
 		System.out.println("drive robot relative " + speeds);
         this.drive(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond, false);
@@ -278,21 +262,6 @@ public class Drivetrain implements TickedSubsystem {
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rotation, gyro.getRotation2d())
                 : new ChassisSpeeds(xVelocity, yVelocity, rotation);
 
-            // Pose2d robot_pose_vel = new Pose2d(
-            //     chassisSpeeds.vxMetersPerSecond * 0.02,
-            //     chassisSpeeds.vyMetersPerSecond * 0.02,
-            //     Rotation2d.fromRadians(chassisSpeeds.omegaRadiansPerSecond * 0.02)
-            // );
-
-            // Twist2d twist_vel = Drivetrain.log(robot_pose_vel);
-
-            // ChassisSpeeds updated_chassis_speeds = new ChassisSpeeds(
-           //     twist_vel.dx / 0.02,
-            //     twist_vel.dy / 0.02,
-            //     twist_vel.dtheta / 0.02
-            // );
-
-            // var swerveModuleStates = kinematics.toSwerveModuleStates(correctForDynamics(chassisSpeeds));
             var swerveModuleStates = kinematics.toSwerveModuleStates(chassisSpeeds);
 
             SwerveDriveKinematics.desaturateWheelSpeeds(swerveModuleStates, MAX_SPEED);
