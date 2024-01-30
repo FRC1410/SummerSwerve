@@ -34,7 +34,8 @@ public final class Robot extends PhaseDrivenRobot {
 	private final AutoSelector autoSelector = new AutoSelector()
 		.add("PR-B#-A# (3pS)", () -> new PathPlannerAuto("PR-B#-A# (3pS)"))
 		.add("PR-B#-C# (3pS)", () -> new PathPlannerAuto("PR-B#-C# (3pS)"))
-		.add("PR-A# (1pA)", () -> new PathPlannerAuto("PR-A# (1pA)"));
+		.add("PR-A# (1pA)", () -> new PathPlannerAuto("PR-A# (1pA)"))
+		.add("BasedAuto", () -> new PathPlannerAuto("BasedAuto"));
 
 	{
 		var profiles = new String[autoSelector.getProfiles().size()];

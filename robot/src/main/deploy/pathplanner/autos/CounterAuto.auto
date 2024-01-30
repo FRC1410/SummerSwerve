@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.42,
-      "y": 7.6
-    },
-    "rotation": 90.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,19 +8,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Amp to PR Amp"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
+            "pathName": "leftTweeter to mid"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Amp PR to A#"
+            "pathName": "2nd Mid counter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3rd mid counter "
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4th counter"
           }
         }
       ]

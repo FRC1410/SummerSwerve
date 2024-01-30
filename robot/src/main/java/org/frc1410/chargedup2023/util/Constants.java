@@ -60,6 +60,14 @@ public interface Constants {
         new ReplanningConfig() // Default path replanning config. See the API for the options here
     );
 
+	HolonomicPathFollowerConfig pathfindPathFollowerConfig = new HolonomicPathFollowerConfig(
+		new PIDConstants(1,0.0, 0.5),
+		new PIDConstants(1, 0.0, 0),
+		3,
+		0.37268062,
+		new ReplanningConfig()
+	);
+
 	PathConstraints constraints = new PathConstraints(
 			3.2, 4.0,
 			Units.degreesToRadians(150), Units.degreesToRadians(150));

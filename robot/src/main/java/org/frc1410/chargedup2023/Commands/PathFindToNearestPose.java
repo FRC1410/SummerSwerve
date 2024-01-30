@@ -27,6 +27,8 @@ public class PathFindToNearestPose extends Command {
 		Pose2d currentRobotPose = drivetrain.getPoseMeters();
 		Pose2d nearestPose = currentRobotPose.nearest(shootingPositions.stream().map(position -> position.pose2d).toList());
 
+//		Pose2d nearestPose = new Pose2d(1.36, 5.52, Rotation2d.fromDegrees(0));
+
 		pathfindHolonomic = new PathfindHolonomic(
 			nearestPose,
 			constraints,
@@ -34,10 +36,11 @@ public class PathFindToNearestPose extends Command {
 			drivetrain::getPoseMeters,
 			drivetrain::getRobotRelativeSpeeds,
 			drivetrain::driveRobotRelative,
-			holonomicPathFollowerConfig,
+			pathfindPathFollowerConfig,
 			0.0,
 			drivetrain
 		);
+
     }
 
 	@Override

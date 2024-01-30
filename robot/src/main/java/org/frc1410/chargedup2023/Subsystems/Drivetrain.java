@@ -137,8 +137,8 @@ public class Drivetrain implements TickedSubsystem {
         try {
             layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
             var alliance = DriverStation.getAlliance();
-            // layout.setOrigin(alliance == Optional.of(Alliance.Blue) ?
-              //     OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
+//             layout.setOrigin(alliance == Optional.of(Alliance.Blue) ?
+//                   OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
         } catch(IOException e) {
             DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
             layout = null;
@@ -309,14 +309,14 @@ public class Drivetrain implements TickedSubsystem {
             var fiducialId = target.getFiducialId();
             System.out.println("id is " + fiducialId);
             // pipelineResult.
-            
+
             // target.getBestCameraToTarget().getRotation().toRotation2d()
             // System.out.println(target.getBestCameraToTarget());
             System.out.println("got vision");
 
             // Get the tag pose from field layout - consider that the layout will be null if it failed to load
             Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
-            
+
             if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
                 var targetPose = tagPose.get();
 				System.out.println("tag pose angle " + tagPose.get().getRotation().toRotation2d());

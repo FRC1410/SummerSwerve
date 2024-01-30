@@ -43,7 +43,6 @@ public class DriveLooped extends Command {
 			drivetrain.isLocked = false;
 		}
 
-		System.out.println("does have input");
 		drivetrain.drive(xVelocity, yVelocity, rotation, true);
 
 		previousTickHadInput = hasInput;
