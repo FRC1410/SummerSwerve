@@ -22,27 +22,14 @@ public class PathFindToNearestPose extends Command {
 	private List<Pose2d> shootingPoses = Arrays.asList(
 		new Pose2d(1.36, 5.52, Rotation2d.fromDegrees(0)),
 		new Pose2d(2.26, 4.81, Rotation2d.fromDegrees(20.5)),
-		new Pose2d(1.88, 5, Rotation2d.fromDegrees(-19.6)),
-		new Pose2d(3.31, 5.42, Rotation2d.fromDegrees(0)),
-		new Pose2d(2.93, 6.21, Rotation2d.fromDegrees(12.77))
+		new Pose2d(1.88, 5, Rotation2d.fromDegrees(-19.6))
+//		new Pose2d(3.31, 5.42, Rotation2d.fromDegrees(0)),
+//		new Pose2d(2.93, 6.21, Rotation2d.fromDegrees(12.77))
 	);
 
 	public PathFindToNearestPose(Drivetrain drivetrain) {
-
 		this.drivetrain = drivetrain;
-
-//		pathfindHolonomic = new PathfindHolonomic(
-//			nearestPose,
-//			constraints,
-//			0.0,
-//			drivetrain::getPoseMeters,
-//			drivetrain::getRobotRelativeSpeeds,
-//			drivetrain::driveRobotRelative,
-//			pathfindPathFollowerConfig,
-//			0.0,
-//			drivetrain
-//		);
-
+		addRequirements(drivetrain);
     }
 
 	@Override
@@ -66,17 +53,24 @@ public class PathFindToNearestPose extends Command {
 
 	@Override
 	public void execute() {
-		this.pathfindHolonomic.execute();
+		if(this.pathfindHolonomic != null) {
+			this.pathfindHolonomic.execute();
+		}
 	}
 
 	@Override
 	public void end(boolean interrupted) {
-		this.pathfindHolonomic.end(interrupted);
+		if(this.pathfindHolonomic != null) {
+			this.pathfindHolonomic.end(interrupted);
+		}
 	}
 
 	@Override
 	public boolean isFinished() {
-
-		return this.pathfindHolonomic.isFinished();
+		if(this.pathfindHolonomic != null) {
+			return this.pathfindHolonomic.isFinished();
+		} else {
+			return false;
+		}
 	}
 }
