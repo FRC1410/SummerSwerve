@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Speaker to C#"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "C# to B#"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "B# to A#"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "EndToMid"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Mid to shoot"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -120,7 +120,7 @@ public class Drivetrain implements TickedSubsystem {
         this.backRight = subsystems.track(new SwerveModule(BACK_RIGHT_DRIVE_MOTOR, BACK_RIGHT_STEER_MOTOR,
                 BACK_RIGHT_STEER_ENCODER, false, true, BACK_RIGHT_STEER_ENCODER_OFFSET, backRightDesiredVel, backRightDesiredAngle, backRightActualVel, backRightActualAngle));
 
-        this.camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+		this.camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
 
         this.poseEstimator = new SwerveDrivePoseEstimator(
             this.kinematics,

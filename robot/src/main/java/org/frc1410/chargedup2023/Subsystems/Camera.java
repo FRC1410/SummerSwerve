@@ -28,7 +28,7 @@ public class Camera implements TickedSubsystem {
 	DoublePublisher aprilYawPubTwo = NetworkTables.PublisherFactory(table, "Second Camera Yaw", 0);
 
 
-	private final PhotonCamera camera = new PhotonCamera("Microsoft_LifeCam_HD-3000");
+	private final PhotonCamera camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
 
 //	private static final AprilTagFieldLayout fieldLayout;
 //

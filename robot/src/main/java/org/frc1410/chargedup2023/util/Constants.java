@@ -61,7 +61,7 @@ public interface Constants {
     );
 
 	HolonomicPathFollowerConfig pathfindPathFollowerConfig = new HolonomicPathFollowerConfig(
-		new PIDConstants(1,0.0, 0.5),
+		new PIDConstants(1.0,0.0, 0.5),
 		new PIDConstants(1, 0.0, 0),
 		3,
 		0.37268062,
