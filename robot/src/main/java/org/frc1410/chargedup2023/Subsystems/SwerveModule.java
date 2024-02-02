@@ -1,6 +1,5 @@
 package org.frc1410.chargedup2023.Subsystems;
 
-
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfigurator;
 import com.ctre.phoenix6.hardware.CANcoder;

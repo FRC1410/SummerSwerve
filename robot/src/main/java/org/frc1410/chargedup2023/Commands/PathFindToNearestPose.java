@@ -2,13 +2,8 @@ package org.frc1410.chargedup2023.Commands;
 
 import com.pathplanner.lib.commands.PathfindHolonomic;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import org.frc1410.chargedup2023.Subsystems.Drivetrain;
-import org.frc1410.chargedup2023.util.ShootingPositions;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 

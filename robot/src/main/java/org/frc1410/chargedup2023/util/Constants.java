@@ -8,7 +8,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.List;
 
