@@ -4,11 +4,13 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.wpilibj.DriverStation;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 
 import java.io.IOException;
+import java.util.Optional;
 
 import static org.frc1410.chargedup2023.util.Constants.*;
 
@@ -18,6 +20,7 @@ public class Camera implements TickedSubsystem {
 
 	private AprilTagFieldLayout layout;
 
+	private PhotonPoseEstimator photonPoseEstimator;
 
 	public Camera() {
 		try {
@@ -37,6 +40,10 @@ public class Camera implements TickedSubsystem {
 
 	 public AprilTagFieldLayout aprilTagFieldLayout() {
 		return layout;
+	 }
+
+	 public Optional<EstimatedRobotPose> getEstimatedPose() {
+		return photonPoseEstimator.update();
 	 }
 
 	@Override

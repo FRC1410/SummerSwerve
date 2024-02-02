@@ -77,7 +77,7 @@ public interface Constants {
 
 	List<ShootingPositions> shootingPoses = Arrays.asList(
 		new ShootingPositions(new Pose2d(1.36, 5.52, Rotation2d.fromDegrees(0)), 0),
-		new ShootingPositions(new Pose2d(2.26, 4.81, Rotation2d.fromDegrees(20.5)), 0),
+		new ShootingPositions(new Pose2d(2.26, 4.81, Rotation2d.fromDegrees(-22.6)), 0),
 		new ShootingPositions(new Pose2d(1.88, 5, Rotation2d.fromDegrees(-19.6)), 0)
 	);
 }

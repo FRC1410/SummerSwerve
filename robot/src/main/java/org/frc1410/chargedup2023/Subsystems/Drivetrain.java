@@ -266,27 +266,16 @@ public class Drivetrain implements TickedSubsystem {
         navXYaw.set(gyro.getPitch());
         updateOdometry();
 
-		var pipelineResult = camera.getLatestResult();
-        var resultTimestamp = pipelineResult.getTimestampSeconds();
+		var estimatedPose = camera.getEstimatedPose();
 
-		if(resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
-			previousPipelineTimestamp = resultTimestamp;
-			var target = pipelineResult.getBestTarget();
+		if(estimatedPose.isPresent()) {
 
-			var fiducialId = target.getFiducialId();
+			// TODO: Possible bug where bad data is fed into pose estimator when no vision
+			var resultTimestamp = estimatedPose.get().timestampSeconds;
 
-			Optional<Pose3d> tagPose =
-				camera.aprilTagFieldLayout() == null
-					? Optional.empty()
-					: camera.aprilTagFieldLayout().getTagPose(fiducialId);
-
-			if(target.getPoseAmbiguity() <= 0.2 && fiducialId >= 0 && tagPose.isPresent()) {
-				var targetPose = tagPose.get();
-				Transform3d camToTarget = target.getBestCameraToTarget();
-				Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
-
-				var visionMesurement = camPose.transformBy(cameraToRobot);
-				poseEstimator.addVisionMeasurement(visionMesurement.toPose2d(), resultTimestamp);
+			if(resultTimestamp != previousPipelineTimestamp) {
+				previousPipelineTimestamp = resultTimestamp;
+				poseEstimator.addVisionMeasurement(estimatedPose.get().estimatedPose.toPose2d(), resultTimestamp);
 			}
 		}
 
