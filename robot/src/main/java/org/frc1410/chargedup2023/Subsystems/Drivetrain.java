@@ -2,13 +2,7 @@ package org.frc1410.chargedup2023.Subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -18,32 +12,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.SPI;
 
 import org.frc1410.framework.scheduler.subsystem.SubsystemStore;
 import org.frc1410.framework.scheduler.subsystem.TickedSubsystem;
-import org.photonvision.PhotonCamera;
 
-import static org.frc1410.chargedup2023.util.IDs.*;
-
-import java.io.IOException;
 import java.util.Optional;
 
 import org.frc1410.chargedup2023.util.NetworkTables;
 
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-// import com.pathplanner.lib.util.PIDConstants;
-// import com.pathplanner.lib.util.ReplanningConfig;
-
+import static org.frc1410.chargedup2023.util.IDs.*;
 import static org.frc1410.chargedup2023.util.Constants.*;
 
 public class Drivetrain implements TickedSubsystem {
@@ -91,13 +74,11 @@ public class Drivetrain implements TickedSubsystem {
     private final SwerveModule backLeft;
     private final SwerveModule backRight;
 
-    private final PhotonCamera camera;
-
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
     
     private double previousPipelineTimestamp = 0;
 
-    private final AprilTagFieldLayout aprilTagFieldLayout;
+	private final Camera camera;
 
     private final SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
             FRONT_LEFT_SWERVE_MODULE_LOCATION,
@@ -110,7 +91,7 @@ public class Drivetrain implements TickedSubsystem {
     public boolean isLocked = false;
 
 
-    public Drivetrain(SubsystemStore subsystems) {
+    public Drivetrain(SubsystemStore subsystems, Camera camera) {
         this.frontLeft = subsystems.track(new SwerveModule(FRONT_LEFT_DRIVE_MOTOR, FRONT_LEFT_STEER_MOTOR,
                 FRONT_LEFT_STEER_ENCODER, true, true, FRONT_LEFT_STEER_ENCODER_OFFSET, frontLeftDesiredVel, frontLeftDesiredAngle, frontLeftActualVel, frontLeftActualAngle));
         this.frontRight = subsystems.track(new SwerveModule(FRONT_RIGHT_DRIVE_MOTOR, FRONT_RIGHT_STEER_MOTOR,
@@ -120,8 +101,6 @@ public class Drivetrain implements TickedSubsystem {
         this.backRight = subsystems.track(new SwerveModule(BACK_RIGHT_DRIVE_MOTOR, BACK_RIGHT_STEER_MOTOR,
                 BACK_RIGHT_STEER_ENCODER, false, true, BACK_RIGHT_STEER_ENCODER_OFFSET, backRightDesiredVel, backRightDesiredAngle, backRightActualVel, backRightActualAngle));
 
-		this.camera = new PhotonCamera("Arducam_OV9281_USB_Camera");
-
         this.poseEstimator = new SwerveDrivePoseEstimator(
             this.kinematics,
             this.gyro.getRotation2d(),
@@ -129,21 +108,9 @@ public class Drivetrain implements TickedSubsystem {
             new Pose2d()
         );
 
-        // this.headingPidController.enableContinuousInput(-Math.PI, Math.PI);
+		this.camera = camera;
 
         gyro.reset();
-
-        AprilTagFieldLayout layout;
-        try {
-            layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
-            var alliance = DriverStation.getAlliance();
-//             layout.setOrigin(alliance == Optional.of(Alliance.Blue) ?
-//                   OriginPosition.kBlueAllianceWallRightSide : OriginPosition.kRedAllianceWallRightSide);
-        } catch(IOException e) {
-            DriverStation.reportError("Failed to load AprilTagFieldLayout", e.getStackTrace());
-            layout = null;
-        }
-        this.aprilTagFieldLayout = layout;
 
         AutoBuilder.configureHolonomic(
                this::getPoseMeters,
@@ -299,35 +266,30 @@ public class Drivetrain implements TickedSubsystem {
         navXYaw.set(gyro.getPitch());
         updateOdometry();
 
-        var pipelineResult = this.camera.getLatestResult();
+		var pipelineResult = camera.getLatestResult();
         var resultTimestamp = pipelineResult.getTimestampSeconds();
 
-        if (resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
-            previousPipelineTimestamp = resultTimestamp;
-            var target = pipelineResult.getBestTarget();
+		if(resultTimestamp != previousPipelineTimestamp && pipelineResult.hasTargets()) {
+			previousPipelineTimestamp = resultTimestamp;
+			var target = pipelineResult.getBestTarget();
 
-            var fiducialId = target.getFiducialId();
-            System.out.println("id is " + fiducialId);
-            // pipelineResult.
+			var fiducialId = target.getFiducialId();
 
-            // target.getBestCameraToTarget().getRotation().toRotation2d()
-            // System.out.println(target.getBestCameraToTarget());
-            System.out.println("got vision");
+			Optional<Pose3d> tagPose =
+				camera.aprilTagFieldLayout() == null
+					? Optional.empty()
+					: camera.aprilTagFieldLayout().getTagPose(fiducialId);
 
-            // Get the tag pose from field layout - consider that the layout will be null if it failed to load
-            Optional<Pose3d> tagPose = aprilTagFieldLayout == null ? Optional.empty() : aprilTagFieldLayout.getTagPose(fiducialId);
+			if(target.getPoseAmbiguity() <= 0.2 && fiducialId >= 0 && tagPose.isPresent()) {
+				var targetPose = tagPose.get();
+				Transform3d camToTarget = target.getBestCameraToTarget();
+				Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
 
-            if (target.getPoseAmbiguity() <= .2 && fiducialId >= 0 && tagPose.isPresent()) {
-                var targetPose = tagPose.get();
-				System.out.println("tag pose angle " + tagPose.get().getRotation().toRotation2d());
-                Transform3d camToTarget = target.getBestCameraToTarget();
-                Pose3d camPose = targetPose.transformBy(camToTarget.inverse());
+				var visionMesurement = camPose.transformBy(cameraToRobot);
+				poseEstimator.addVisionMeasurement(visionMesurement.toPose2d(), resultTimestamp);
+			}
+		}
 
-                var visionMeasurement = camPose.transformBy(cameraToRobot);
-                poseEstimator.addVisionMeasurement(visionMeasurement.toPose2d(), resultTimestamp);
-            }
-        }
-		
         System.out.println(this.getPoseMeters());
         var pose = this.getPoseMeters();
         this.poseX.set(pose.getX());

@@ -5,11 +5,12 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.*;
 import edu.wpi.first.math.util.Units;
+
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 public interface Constants {
     // Controller constants
@@ -50,6 +51,8 @@ public interface Constants {
 
     double RIGHT_ANGLE_TO_RAD = Math.toRadians(90);
 
+	String CAMERA_NAME = "Arducam_OV9281_USB_Camera";
+
     Transform3d cameraToRobot = new Transform3d(new Translation3d(), new Rotation3d(0, 0, Math.PI));
 
 	HolonomicPathFollowerConfig holonomicPathFollowerConfig = new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
@@ -71,4 +74,10 @@ public interface Constants {
 	PathConstraints constraints = new PathConstraints(
 			3.2, 4.0,
 			Units.degreesToRadians(150), Units.degreesToRadians(150));
+
+	List<ShootingPositions> shootingPoses = Arrays.asList(
+		new ShootingPositions(new Pose2d(1.36, 5.52, Rotation2d.fromDegrees(0)), 0),
+		new ShootingPositions(new Pose2d(2.26, 4.81, Rotation2d.fromDegrees(20.5)), 0),
+		new ShootingPositions(new Pose2d(1.88, 5, Rotation2d.fromDegrees(-19.6)), 0)
+	);
 }
